@@ -1,0 +1,26 @@
+/*
+ * @Date: 2021-12-17 00:05:51
+ * @LastEditors: Ke Ren
+ * @LastEditTime: 2021-12-17 13:40:31
+ * @FilePath: /tower-defense-game/css/style.css
+ */
+
+ #game-wrap {
+     width: 800px;
+     height: 600px;
+     background-size:cover;
+ }
+
+ #game-menu {
+     position: absolute;
+     top:40%;
+     left: 50%; 
+     transform: translate(-50%, -50%);
+ }
+
+ .menu-button {
+     margin: 20px;
+     width: 180px;
+     height: 55px;
+     background-size: cover;
+ }
