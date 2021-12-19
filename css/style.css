@@ -1,19 +1,46 @@
 /*
  * @Date: 2021-12-17 00:05:51
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-17 13:40:31
+ * @LastEditTime: 2021-12-18 22:56:20
  * @FilePath: /tower-defense-game/css/style.css
  */
 
+ /* map canvas contains the scene */
+ #mapCanvas
+ {
+     z-index: 1;
+     position: absolute;
+     transform: translate(-50%, -50%);
+ }
+ 
+ #towerCanvas {
+     z-index: 2;
+     position: absolute;
+     transform: translate(-50%, -50%);
+ }
+ 
+ #enemisCanvas {
+     z-index: 3;
+     position: absolute;
+     transform: translate(-50%, -50%);
+ }
+
+ #bulletsCanvas {
+    z-index: 4;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+ 
+
  #game-wrap {
-     width: 800px;
-     height: 600px;
+     z-index: 5;
+     position: absolute;
      background-size:cover;
  }
 
  #game-menu {
      position: absolute;
-     top:40%;
+     top:50%;
      left: 50%; 
      transform: translate(-50%, -50%);
  }

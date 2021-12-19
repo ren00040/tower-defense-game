@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-17 23:21:06
+ * @LastEditTime: 2021-12-18 22:55:15
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -13,10 +13,15 @@
 var towerGame; // the global game object
 var frame_rate = 30; // game frame rate: refresh all 30 times per second
 var gameWarp; // contains the game's window
-// TODO: add more variables
+var canvasWidth = 700; // Initialize game canvas width
+var canvasHight = 600; // Initialize game canvas hight
+// TODO: add more global variables
 
 // game setup
 function gameSetup() {
+    // Creat the game object
+    towerGame = new Game();
+
     //setup game main container
     gameWarp = document.createElement("div");
     gameWarp.setAttribute("id","game-wrap");
@@ -24,8 +29,52 @@ function gameSetup() {
 
     document.body.append(gameWarp);
     gameWarp.style.display = "block";
+    gameWarp.style.width = canvasWidth+"px";
+    gameWarp.style.height = canvasHight+"px";
 
     console.log("the game wrap is created");
+
+    // Initialize All Game Canvas
+    
+    /*
+    * Initialize the map canvas contains the scene
+    * Get CTX(map) and set canvas's width and height
+    */
+    const mapCanvas = document.querySelector("#mapCanvas");
+    // get CTX(map)
+    var mapCTX = mapCanvas.getContext("2d") // Create a CanvasRenderingContext 2D Object
+    mapCanvas.width = canvasWidth*2;
+    mapCanvas.height = canvasHight*2;
+
+    /*
+    * Initialize the battle canvas
+    * Get CTX(battle canvas) and set canvas's width and height
+    */
+    const towerCanvas = document.querySelector("#towerCanvas");
+    // get CTX(battle canvas)
+    var battleCTX = towerCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
+    towerCanvas.width = canvasWidth*2;
+    towerCanvas.height = canvasHight*2;
+
+    /*
+    * Initialize the enemy canvas
+    * Get CTX(enemy canvas) and set canvas's width and height
+    */
+    const enemyCanvas = document.querySelector("#enemisCanvas");
+    // get CTX(enemy canvas)
+    var enemyCTX = enemyCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
+    enemyCanvas.width = canvasWidth*2;
+    enemyCanvas.height = canvasHight*2;
+
+    /*
+    * Initialize the bullets canvas
+    * Get CTX(bullets canvas) and set canvas's width and height
+    */
+    const bulletCanvas = document.querySelector("#bulletsCanvas");
+    // get CTX(enemy canvas)
+    var bulletCTX = bulletCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
+    bulletCanvas.width = canvasWidth*2;
+    bulletCanvas.height = canvasHight*2;
 
     // Setup game menu
     let gameMenu = document.createElement("div");
@@ -37,8 +86,6 @@ function gameSetup() {
 
     drawGameMenu(); // Draw the game menu buttons
 
-    // Creat the game object
-    towerGame = new Game();
 }
 
 // Draw the game menu
@@ -68,7 +115,7 @@ function drawGameMenu() {
     // rendering menu buttons
     gameMenu.append(startButton,creditsButton,exitButton);
 
-    let menuButton = document.querySelectorAll(".menu-button"); //select all menu-buttons
+    const menuButton = document.querySelectorAll(".menu-button"); //select all menu-buttons
     /*
      * use loop to set all button's backgroundImage
      * use onmouseover & onmouseout to set the hover effects
@@ -116,19 +163,36 @@ function credits() {
 // Game object from setup()
 class Game {
     constructor(){
-        this.level = 1; // Game starts from the frist level
-        this.enemies = [];
+        this.level = 1; // Current level; Game starts from the frist level
+        this.enemies = []; 
         this.towers = [];
         this.bullets = []
         this.gold = 0;
+        this.life = 0;
     }
 }
 
 // Game start
-function start() {
-    console.log("game start");
+function start() { 
+    // from drawGameMenu()
+    document.querySelector("#game-menu").remove();
+    loadingBar();
+    loadScene();
 }
+
+    // Loading bar animation
+function loadingBar() {
+    // from start()
+    console.log("loading bar");
+}
+
     // Loading Scene
+function loadScene() {
+    // from start()
+    console.log("loading battle map");
+    // loading battle map
+    gameWarp.style.backgroundImage = "url('assets/images/levels/level"+towerGame.level+".png')";
+}
 
     // Loading Player Info
 
