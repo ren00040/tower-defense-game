@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-19 22:41:28
+ * @LastEditTime: 2021-12-20 00:02:59
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -160,12 +160,12 @@ function drawGameMenu() {
 
 // Game Exit
 function exit() {
-    console.log("game exit")
+    console.log("TODO: game exit")
 }
 
 // Show Credits Page
 function credits() {
-    console.log("Credits");
+    console.log("TODO: Credits");
 }
 
 // Game object from setup()
@@ -181,34 +181,99 @@ class Game {
         this.towerCTX;
         this.enemyCTX;
         this.bulletCTX;
-        this.mapSprite = new Image();
+        this.mapSprite = new Image(); //the game background image
     }
 }
 
 // Game start
 function start() { 
     // from drawGameMenu()
+    console.clear();
+    console.log("Game Start");
     document.querySelector("#game-menu").remove();
     loadingBar();
     loadScene();
+    drawUI();
 }
 
     // Loading bar animation
 function loadingBar() {
     // from start()
-    console.log("loading bar");
+    console.log("TODO: loading bar");
 }
 
     // Loading Scene
-function loadScene() {
-    // from start()
-    console.log("loading battle map");
+function loadScene() { // from start()
+    let currentlevel = towerGame.level;
     towerGame.mapCTX.clearRect(0,0,mapCanvas.width,mapCanvas.height);
     // loading battle map base on current towerGame.level
     towerGame.mapSprite.src = "assets/images/levels/level"+towerGame.level+".png";
     towerGame.mapSprite.onload = function(){
         towerGame.mapCTX.drawImage(towerGame.mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
     }
+
+    /*
+     * draw the settle places which can build towers
+     * Important!!! It's hard to click elements in canvas, so draw all towers and UI in the Html layer.
+    */
+    let settlePlaces = levels[currentlevel-1].settlePlace;
+    const settleWrap = document.createElement("div");
+    settleWrap.setAttribute("id","settleWrap");
+    document.querySelector("#game-wrap").append(settleWrap);
+
+    // create and render the settle places
+    for(const[key, coordinate] of settlePlaces.entries()) {
+        let positionX = coordinate[0];
+        let positionY = coordinate[1];
+        
+        let settlePoint = new Image();
+        settlePoint.setAttribute("id","settlePoint"+key);
+        settlePoint.setAttribute("class","settlePoint");
+        settlePoint.src = "assets/images/towers/settle.png";
+        settlePoint.style.position = "absolute";
+        settlePoint.style.left = positionX + "px";
+        settlePoint.style.top  = positionY + "px";
+
+        // rendering settlePlace
+        settleWrap.append(settlePoint);
+    }
+    
+    /*
+     * draw the waypath
+     * It's a tool for adjust the enemy's waypath points
+     * remember to hide all the points when game is pubilished
+    */
+   let currentWaypath = levels[currentlevel-1].waypath;
+
+   const waypathWrap = document.createElement("div");
+   waypathWrap.setAttribute("id","waypath");
+   document.querySelector("#game-wrap").append(waypathWrap);
+    
+   // create and render the waypath with num
+   for(const[key, coordinate] of currentWaypath.entries()) {
+       let positionX = coordinate[0];
+       let positionY = coordinate[1];
+
+       let waypoint = document.createElement("div");
+       waypoint.innerHTML = key;
+
+       waypoint.setAttribute("id","waypoint"+key);
+       waypoint.setAttribute("class","waypoint");
+
+       waypoint.style.position = "absolute";
+       waypoint.style.color = "red";
+       waypoint.style.left = positionX + "px";
+       waypoint.style.top = positionY + "px";
+
+       waypathWrap.append(waypoint);
+   }
+
+   console.log("battle map loading complete");
+}
+
+function drawUI() {
+    console.log("TODO: Draw UI");
+
 }
 
     // Loading Player Info
