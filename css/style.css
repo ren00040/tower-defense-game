@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-17 00:05:51
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-18 22:56:20
+ * @LastEditTime: 2021-12-19 22:40:55
  * @FilePath: /tower-defense-game/css/style.css
  */
 
@@ -10,25 +10,21 @@
  {
      z-index: 1;
      position: absolute;
-     transform: translate(-50%, -50%);
  }
  
  #towerCanvas {
      z-index: 2;
      position: absolute;
-     transform: translate(-50%, -50%);
  }
  
  #enemisCanvas {
      z-index: 3;
      position: absolute;
-     transform: translate(-50%, -50%);
  }
 
  #bulletsCanvas {
     z-index: 4;
     position: absolute;
-    transform: translate(-50%, -50%);
 }
  
 
