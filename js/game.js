@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-20 00:02:59
+ * @LastEditTime: 2021-12-21 00:10:58
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -271,7 +271,7 @@ function loadScene() { // from start()
    console.log("battle map loading complete");
 }
 
-function drawUI() {
+function drawUI() { // from start()
     console.log("TODO: Draw UI");
 
 }
@@ -292,3 +292,6 @@ function drawUI() {
 
 
 gameSetup();
+enemySpawner();
+
+console.log(towerGame.enemies);
