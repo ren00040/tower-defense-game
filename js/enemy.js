@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-21 00:12:09
+ * @LastEditTime: 2021-12-21 22:07:40
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -22,47 +22,41 @@ class Eenmy {
 class EnemySpawner{
     constructor() {
         this.enemies = [];
-        this.spawnRoot;
-        this.spawnInterval = 2; // seconds between two enemies
+        this.spawnInterval = 1000; // seconds between two enemies
         this.spawnWave;
         this.waveInterval;
-        this.waveDelay = 10; // seconds between two waves
+        this.waveDelay = 3000; // seconds between two waves
     }
 }
         
 // Spawn enemies
+// Setup an spawner
 function enemySpawner() {
     console.clear();
     // Create spawner object and intialize the waves
     var spawner = new EnemySpawner();
     let currentLevel = towerGame.level;
     var waves = levels[currentLevel-1].enemyWave;
-    // startSpawning
-    waves.forEach(wave => {
-        const enemiesAmount = wave[1];
-        for (let index = 0; index < enemiesAmount; index++) {
-            // Call the spawn method
-            console.log("Call spawnEnemy");
-            spawnEnemy(index,wave[0]);
-            
-            // wait spawn interval
-            console.log("Call spawnDelay"); 
-            spawnDelay(spawner);
-        }
-    });
+    spawner.spawnWave = 0;
+    // start Spawning the first wave
+    startSpawning(spawner,waves[spawner.spawnWave]);
 }
 
-function spawnDelay(spawner) {
-    // TODO: Delay random from 0 - spawnInterval
-    console.log("spawn delay "+spawner.spawnInterval+" seconds"); 
+// spawn a wave of enemies
+// first called from enemySpawner()
+// When the last enemy in one wave is dead, Call this function
+function startSpawning(spawner,wave) {
+    for (let enemyID = 0; enemyID < wave[1]; enemyID++) {
+        setTimeout(spawnEnemy,spawner.spawnInterval*(enemyID+1),enemyID,wave);
+    }
 }
 
+// spawn an enemy
 function spawnEnemy(enemyID,wave) {
-    // spawn an enemy
     var enemy = new Eenmy();
     enemy.id = enemyID
     console.log("spawn an enemy "+ enemyID);
-    console.log("wave:"+wave);
+    console.log("wave:"+wave[0]);
 
     towerGame.enemies.push(enemy);
 }
