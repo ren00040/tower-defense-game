@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-21 00:10:58
+ * @LastEditTime: 2021-12-21 22:23:35
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -129,17 +129,17 @@ function drawGameMenu() {
      * use onmouseover & onmouseout to set the hover effects
      */
     menuButton.forEach(element => {
-        element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"1.png')";
+        element.style.backgroundImage = "url('/assets/images/ui/"+element.getAttribute('name')+"1.png')";
         // hover effect
         element.onmouseover = function () {
-            element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"2.png')";
+            element.style.backgroundImage = "url('/assets/images/ui/"+element.getAttribute('name')+"2.png')";
         };
         element.onmouseout = function () {
-            element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"1.png')";
+            element.style.backgroundImage = "url('/assets/images/ui/"+element.getAttribute('name')+"1.png')";
         };
         // click event
         element.addEventListener('click',function(){
-            element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"3.png')";
+            element.style.backgroundImage = "url('/assets/images/ui/"+element.getAttribute('name')+"3.png')";
             switch (element.getAttribute('name')) {
                 case "start":
                     start();
@@ -207,7 +207,7 @@ function loadScene() { // from start()
     let currentlevel = towerGame.level;
     towerGame.mapCTX.clearRect(0,0,mapCanvas.width,mapCanvas.height);
     // loading battle map base on current towerGame.level
-    towerGame.mapSprite.src = "assets/images/levels/level"+towerGame.level+".png";
+    towerGame.mapSprite.src = "/assets/images/levels/level"+towerGame.level+".png";
     towerGame.mapSprite.onload = function(){
         towerGame.mapCTX.drawImage(towerGame.mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
     }
@@ -229,7 +229,7 @@ function loadScene() { // from start()
         let settlePoint = new Image();
         settlePoint.setAttribute("id","settlePoint"+key);
         settlePoint.setAttribute("class","settlePoint");
-        settlePoint.src = "assets/images/towers/settle.png";
+        settlePoint.src = "/assets/images/towers/settle.png";
         settlePoint.style.position = "absolute";
         settlePoint.style.left = positionX + "px";
         settlePoint.style.top  = positionY + "px";
