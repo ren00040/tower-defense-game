@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-21 22:28:50
+ * @LastEditTime: 2021-12-21 22:34:25
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -129,17 +129,17 @@ function drawGameMenu() {
      * use onmouseover & onmouseout to set the hover effects
      */
     menuButton.forEach(element => {
-        element.style.backgroundImage = "url('../assets/images/ui/"+element.getAttribute('name')+"1.png')";
+        element.style.backgroundImage = "url('/assets/images/ui/"+element.getAttribute('name')+"1.png')";
         // hover effect
         element.onmouseover = function () {
-            element.style.backgroundImage = "url('../assets/images/ui/"+element.getAttribute('name')+"2.png')";
+            element.style.backgroundImage = "url('/assets/images/ui/"+element.getAttribute('name')+"2.png')";
         };
         element.onmouseout = function () {
-            element.style.backgroundImage = "url('../assets/images/ui/"+element.getAttribute('name')+"1.png')";
+            element.style.backgroundImage = "url('/assets/images/ui/"+element.getAttribute('name')+"1.png')";
         };
         // click event
         element.addEventListener('click',function(){
-            element.style.backgroundImage = "url('../assets/images/ui/"+element.getAttribute('name')+"3.png')";
+            element.style.backgroundImage = "url('/assets/images/ui/"+element.getAttribute('name')+"3.png')";
             switch (element.getAttribute('name')) {
                 case "start":
                     start();
