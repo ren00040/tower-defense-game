@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-15 23:49:00
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-15 23:54:18
+ * @LastEditTime: 2021-12-26 01:05:35
  * @FilePath: /tower-defense-game/js/method.js
  */
 
@@ -10,16 +10,9 @@
 // Define the PI
 var pi = Math.PI;
 
-// degrees to radians
-function degreesToRadians(degrees)
-{
-  return degrees * (pi/180);
-}
-
-// radians to degrees
-function radiansToDegrees(radians) {
-    return radians*180/pi;
-}
+// change Degress and Radians
+const toDegrees = radians => (radians * 180) / Math.PI
+const toRadians = degrees => (degrees * Math.PI) / 180
 
 // get distance between two points
 function getDistance(start,end) {
@@ -33,7 +26,37 @@ function pxToNum(px) {
     return Number(px.replace('px',''));
 }
 
-// Calculate linear interpolation between two points
-function pSub(startPoint,targetPoint) {
-    return [targetPoint[0]-startPoint[0],targetPoint[1]-startPoint[1]];
-  }
+// Define Vector and math
+class Vector {
+    constructor(...components) {
+        this.components = components
+    }
+    // vector add
+    add({ components }) {
+        return new Vector(
+        ...components.map((component, index) => this.components[index] + component)
+        )
+    }
+    // vector subtract
+    subtract({ components }) {
+        return new Vector(
+        ...components.map((component, index) => this.components[index] - component)
+        )
+    }
+
+    // vector length
+    length() {
+        return Math.hypot(...this.components)
+    }
+
+    // Dot Product
+    dotProduct({ components }) {
+        return components.reduce((acc, component, index) => acc + component * this.components[index], 0)
+    }
+
+    // Angle between two points
+    angleBetween({components}) {
+        return Math.atan(...components);
+    }
+      
+}

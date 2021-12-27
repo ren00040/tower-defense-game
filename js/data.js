@@ -1,11 +1,13 @@
 /*
  * @Date: 2021-12-16 22:38:00
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-19 23:32:31
+ * @LastEditTime: 2021-12-27 00:43:40
  * @FilePath: /tower-defense-game/js/data.js
  */
 
 // data.js contains all game datas
+
+var currentLevel = 1;
 
 const level1 = {
     id: 1,

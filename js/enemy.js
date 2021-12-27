@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-21 22:07:40
+ * @LastEditTime: 2021-12-27 01:23:34
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -10,22 +10,26 @@ class Eenmy {
         this.id;
         this.name;
         this.speed;
-        this.url;
+        this.image = new Image();
         this.healPoint;
         this.position = [];
         this.wayPointIndex = 0;
-        this.step;
+        this.stepIndex = 0;
         this.wave;
+        this.animaLoop = 0;
+        this.animaInterval = 0;
+        this.angle;
+        this.step;
     }
 }
 
 class EnemySpawner{
     constructor() {
         this.enemies = [];
-        this.spawnInterval = 1000; // seconds between two enemies
+        this.spawnInterval = 2000; // milliseconds between two enemies
         this.spawnWave;
         this.waveInterval;
-        this.waveDelay = 3000; // seconds between two waves
+        this.waveDelay = 3000; // milliseconds between two waves
     }
 }
         
@@ -49,14 +53,16 @@ function startSpawning(spawner,wave) {
     for (let enemyID = 0; enemyID < wave[1]; enemyID++) {
         setTimeout(spawnEnemy,spawner.spawnInterval*(enemyID+1),enemyID,wave);
     }
+    console.log(towerGame.enemies);
 }
 
 // spawn an enemy
+// TODO: Auto change enemy's root and image base on stage and enmey name
 function spawnEnemy(enemyID,wave) {
     var enemy = new Eenmy();
-    enemy.id = enemyID
-    console.log("spawn an enemy "+ enemyID);
-    console.log("wave:"+wave[0]);
-
+    enemy.id = enemyID;
+    enemy.position = [350,0];
+    enemy.image = new Image();
+    enemy.image.src = "assets/enemies/fox.png";
     towerGame.enemies.push(enemy);
 }

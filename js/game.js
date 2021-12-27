@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-21 22:34:25
+ * @LastEditTime: 2021-12-27 01:22:36
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -11,10 +11,10 @@
 
 // define all global variables
 var towerGame; // the global game object
-var frame_rate = 30; // game frame rate: refresh all 30 times per second
+const frame_rate = 25; // game frame rate: refresh once per 40 milliseconds: 1000/25=40
 var gameWrap; // contains the game's window
-var canvasWidth = 700; // Initialize game canvas width
-var canvasHight = 600; // Initialize game canvas hight
+const canvasWidth = 700; // Initialize game canvas width
+const canvasHight = 600; // Initialize game canvas hight
 // TODO: add more global variables
 
 // game setup
@@ -142,7 +142,7 @@ function drawGameMenu() {
             element.style.backgroundImage = "url('/assets/images/ui/"+element.getAttribute('name')+"3.png')";
             switch (element.getAttribute('name')) {
                 case "start":
-                    start();
+                    loadingLevel();
                     break;
                 case "credits":
                     credits();
@@ -183,10 +183,137 @@ class Game {
         this.bulletCTX;
         this.mapSprite = new Image(); //the game background image
     }
+
+    update() { //from gameUpdate()
+        // update enemies
+        towerGame.renderEnemies();
+        // update towers
+        // update bullets
+        // update UI
+    }
+
+    renderEnemies() {
+        // clear enemy canvas
+        towerGame.enemyCTX.clearRect(0,0,canvasWidth,canvasHight);
+
+        towerGame.updateEnemiesPosition();
+        towerGame.drawEnemies();
+    }
+
+    updateEnemiesPosition() {
+        towerGame.enemies.forEach(enemy => {
+            enemy.speed = 1; // set enemy's speed;
+            towerGame.calculateEnemyPositon(enemy);
+        });
+    }
+
+    calculateEnemyPositon(enemy) {
+        let nextWayPointX = levels[currentLevel].waypath[enemy.wayPointIndex+1][0];
+        let nextWayPointY = levels[currentLevel].waypath[enemy.wayPointIndex+1][1];
+
+        let target = new Vector(nextWayPointX,nextWayPointY);
+
+        let enemyPos = new Vector(enemy.position[0],enemy.position[1]);
+
+        // the direction from enemy to next way point
+        let angle = enemyPos.angleBetween(target);
+
+        // the step per frame
+        let offsetX = Math.cos(angle)*enemy.speed;
+        let offsetY = Math.sin(angle)*enemy.speed;
+
+        enemy.position[0] += offsetX;
+        enemy.position[1] += offsetY;
+    }
+
+    drawEnemies() {
+        console.log("drawEnemies");
+        towerGame.enemies.forEach(enemy => {
+            let enemyImg = enemy.image;
+            // Do the enemy walking animation
+            // TODO: change the direction of enemy based on the waypath
+            towerGame.enemyCTX.drawImage(enemyImg,enemy.animaLoop*32,0,32,32,enemy.position[0],enemy.position[1],32,32,);
+
+            // more enemy's speed more animation fast
+            enemy.animaInterval++;
+            if (enemy.animaInterval >= (10/enemy.speed)) {
+                enemy.animaLoop++;
+                enemy.animaInterval = 0;
+            }
+            if(enemy.animaLoop >= 4) enemy.animaLoop = 0;
+        });
+    }
+
+
+
+
+    // render one enemy
+    // drawEnemy(key,enemy) {
+    //     towerGame.drawEnemyAnimate(key,enemy);
+    // }
+
+    // drawEnemyAnimate(key,enemy) {
+    //     let enemyImg = enemy.image;
+    //     towerGame.calNewPosition(key,enemy);
+        
+    //     // Do the enemy walking animation
+    //     // TODO: change the direction of enemy based on the waypath
+    //     towerGame.enemyCTX.drawImage(enemyImg,enemy.animaLoop*32,0,32,32,towerGame.enemies[key].position[0],towerGame.enemies[enemy.id].position[1],32,32,);
+    //     towerGame.enemyCTX.fillText(enemy.id,towerGame.enemies[enemy.id].position[0],towerGame.enemies[enemy.id].position[1]+32);
+    
+
+    //     // more enemy's speed more animation fast
+    //     enemy.animaInterval++;
+    //     if (enemy.animaInterval >= (10/enemy.speed)) {
+    //         enemy.animaLoop++;
+    //         enemy.animaInterval = 0;
+    //     }
+    //     if(enemy.animaLoop >= 4) enemy.animaLoop = 0;
+    // }
+
+    // calNewPosition(enemy) {
+        
+    //     let currentLevel = towerGame.level - 1;
+    //     let nextWayPointX = levels[currentLevel].waypath[enemy.wayPointIndex+1][0];
+    //     let nextWayPointY = levels[currentLevel].waypath[enemy.wayPointIndex+1][1];
+
+    //     let target = new Vector(nextWayPointX,nextWayPointY);
+    //     let enemyPos = new Vector(towerGame.enemies[enemy.id].position[0], towerGame.enemies[enemy.id].position[1]);
+    //     console.log(enemyPos.components[0],enemyPos.components[1]);
+
+    //     // the direction from enemy to next way point
+    //     let angle = enemyPos.angleBetween(target);
+
+    //     // the step per frame
+    //     let offsetX = Math.cos(angle)*enemy.speed;
+    //     let offsetY = Math.sin(angle)*enemy.speed;
+
+    //     // enemy.position[0] += offsetX;
+    //     // enemy.position[1] += offsetY;
+
+    //     towerGame.enemies[enemy.id].position[0] += offsetX;
+    //     towerGame.enemies[enemy.id].position[1] += offsetY;
+
+    //     console.log(enemy.id,towerGame.enemies[enemy.id].position);
+    // }
+
+
+    renderTower() {
+        
+    }
+
+    renderBullets() {
+
+    }
+
+    updateUI() {
+        
+    }
+
 }
 
 // Game start
-function start() { 
+function loadingLevel() { 
     // from drawGameMenu()
     console.clear();
     console.log("Game Start");
@@ -194,6 +321,8 @@ function start() {
     loadingBar();
     loadScene();
     drawUI();
+    enemySpawner();
+    gameUpdate();
 }
 
     // Loading bar animation
@@ -279,6 +408,10 @@ function drawUI() { // from start()
     // Loading Player Info
 
     // Battle Start
+function gameUpdate() { //from loadingLevel()
+    towerGame.update();
+    window.setTimeout(gameUpdate, 1000/frame_rate); // come back here every interval; 24 times per second
+}
 
     // Battle Fail
 
@@ -292,6 +425,3 @@ function drawUI() { // from start()
 
 
 gameSetup();
-enemySpawner();
-
-console.log(towerGame.enemies);
