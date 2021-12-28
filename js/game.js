@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-27 01:22:36
+ * @LastEditTime: 2021-12-28 00:51:55
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -192,7 +192,7 @@ class Game {
         // update UI
     }
 
-    renderEnemies() {
+    renderEnemies() { // from updat()
         // clear enemy canvas
         towerGame.enemyCTX.clearRect(0,0,canvasWidth,canvasHight);
 
@@ -200,14 +200,14 @@ class Game {
         towerGame.drawEnemies();
     }
 
-    updateEnemiesPosition() {
+    updateEnemiesPosition() { // from renderEnemies()
         towerGame.enemies.forEach(enemy => {
             enemy.speed = 1; // set enemy's speed;
             towerGame.calculateEnemyPositon(enemy);
         });
     }
 
-    calculateEnemyPositon(enemy) {
+    calculateEnemyPositon(enemy) { // from updateEnemiesPosition()
         let nextWayPointX = levels[currentLevel].waypath[enemy.wayPointIndex+1][0];
         let nextWayPointY = levels[currentLevel].waypath[enemy.wayPointIndex+1][1];
 
@@ -226,7 +226,7 @@ class Game {
         enemy.position[1] += offsetY;
     }
 
-    drawEnemies() {
+    drawEnemies() { // from renderEnemies()
         console.log("drawEnemies");
         towerGame.enemies.forEach(enemy => {
             let enemyImg = enemy.image;
@@ -243,60 +243,6 @@ class Game {
             if(enemy.animaLoop >= 4) enemy.animaLoop = 0;
         });
     }
-
-
-
-
-    // render one enemy
-    // drawEnemy(key,enemy) {
-    //     towerGame.drawEnemyAnimate(key,enemy);
-    // }
-
-    // drawEnemyAnimate(key,enemy) {
-    //     let enemyImg = enemy.image;
-    //     towerGame.calNewPosition(key,enemy);
-        
-    //     // Do the enemy walking animation
-    //     // TODO: change the direction of enemy based on the waypath
-    //     towerGame.enemyCTX.drawImage(enemyImg,enemy.animaLoop*32,0,32,32,towerGame.enemies[key].position[0],towerGame.enemies[enemy.id].position[1],32,32,);
-    //     towerGame.enemyCTX.fillText(enemy.id,towerGame.enemies[enemy.id].position[0],towerGame.enemies[enemy.id].position[1]+32);
-    
-
-    //     // more enemy's speed more animation fast
-    //     enemy.animaInterval++;
-    //     if (enemy.animaInterval >= (10/enemy.speed)) {
-    //         enemy.animaLoop++;
-    //         enemy.animaInterval = 0;
-    //     }
-    //     if(enemy.animaLoop >= 4) enemy.animaLoop = 0;
-    // }
-
-    // calNewPosition(enemy) {
-        
-    //     let currentLevel = towerGame.level - 1;
-    //     let nextWayPointX = levels[currentLevel].waypath[enemy.wayPointIndex+1][0];
-    //     let nextWayPointY = levels[currentLevel].waypath[enemy.wayPointIndex+1][1];
-
-    //     let target = new Vector(nextWayPointX,nextWayPointY);
-    //     let enemyPos = new Vector(towerGame.enemies[enemy.id].position[0], towerGame.enemies[enemy.id].position[1]);
-    //     console.log(enemyPos.components[0],enemyPos.components[1]);
-
-    //     // the direction from enemy to next way point
-    //     let angle = enemyPos.angleBetween(target);
-
-    //     // the step per frame
-    //     let offsetX = Math.cos(angle)*enemy.speed;
-    //     let offsetY = Math.sin(angle)*enemy.speed;
-
-    //     // enemy.position[0] += offsetX;
-    //     // enemy.position[1] += offsetY;
-
-    //     towerGame.enemies[enemy.id].position[0] += offsetX;
-    //     towerGame.enemies[enemy.id].position[1] += offsetY;
-
-    //     console.log(enemy.id,towerGame.enemies[enemy.id].position);
-    // }
-
 
     renderTower() {
         
