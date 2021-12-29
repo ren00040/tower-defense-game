@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-15 23:49:00
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-26 01:05:35
+ * @LastEditTime: 2021-12-29 01:09:31
  * @FilePath: /tower-defense-game/js/method.js
  */
 
@@ -16,10 +16,19 @@ const toRadians = degrees => (degrees * Math.PI) / 180
 
 // get distance between two points
 function getDistance(start,end) {
-    let x = Math.abs(start[0]-end[0]);
-    let y = Math.abs(start[1]-end[1]);
+    // let x = end[0]-start[0];
+    // let y = end[1]-start[1];
+    let x = Math.abs(end[0]-start[0]);
+    let y = Math.abs(end[1]-start[1]);
     return Math.sqrt(x*x+y*y);
 }
+
+function angleBetweenPoints(start,end) {
+    let x = end[0] - start[0];
+    let y = end[1] - start[1];
+    return Math.atan2(y,x)*180/Math.PI
+}
+
 
 // change px to num
 function pxToNum(px) {
@@ -43,20 +52,4 @@ class Vector {
         ...components.map((component, index) => this.components[index] - component)
         )
     }
-
-    // vector length
-    length() {
-        return Math.hypot(...this.components)
-    }
-
-    // Dot Product
-    dotProduct({ components }) {
-        return components.reduce((acc, component, index) => acc + component * this.components[index], 0)
-    }
-
-    // Angle between two points
-    angleBetween({components}) {
-        return Math.atan(...components);
-    }
-      
 }

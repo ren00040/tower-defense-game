@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-28 00:51:55
+ * @LastEditTime: 2021-12-29 01:41:37
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -207,32 +207,78 @@ class Game {
         });
     }
 
-    calculateEnemyPositon(enemy) { // from updateEnemiesPosition()
+    calculateEnemyPositon(enemy) {
+        let currentWayPointX = levels[currentLevel].waypath[enemy.wayPointIndex][0];
+        let currentWayPointY = levels[currentLevel].waypath[enemy.wayPointIndex][1];
+        let currentWayPoint = [currentWayPointX,currentWayPointY];
+
         let nextWayPointX = levels[currentLevel].waypath[enemy.wayPointIndex+1][0];
         let nextWayPointY = levels[currentLevel].waypath[enemy.wayPointIndex+1][1];
+        let nextWayPoint = [nextWayPointX, nextWayPointY];
 
-        let target = new Vector(nextWayPointX,nextWayPointY);
+        let length = getDistance(currentWayPoint,nextWayPoint);
+        enemy.step = Math.round(length/enemy.speed);
+        
+        let lengthX = nextWayPointX - currentWayPointX;
+        let lengthY = nextWayPointY - currentWayPointY
+        
+        enemy.position[0] += lengthX/enemy.step;
+        enemy.position[1] += lengthY/enemy.step;
+        
+        enemy.angle = angleBetweenPoints(currentWayPoint, nextWayPoint);
 
-        let enemyPos = new Vector(enemy.position[0],enemy.position[1]);
+        enemy.stepIndex++;
+
+        // if enemy arrives the waypoint then turn into the next waypoint
+        if(enemy.stepIndex > enemy.step) {
+            enemy.stepIndex = 0;
+            enemy.wayPointIndex++;
+        }
+    }
+
+    anotherCalculateEnemyPositon(enemy) { // from updateEnemiesPosition()
+        let nextWayPointX = levels[currentLevel].waypath[enemy.wayPointIndex+1][0];
+        let nextWayPointY = levels[currentLevel].waypath[enemy.wayPointIndex+1][1];
+        let nextWayPoint = [nextWayPointX, nextWayPointY];
 
         // the direction from enemy to next way point
-        let angle = enemyPos.angleBetween(target);
+        let angle = angleBetweenPoints(enemy.position, nextWayPoint);
 
         // the step per frame
-        let offsetX = Math.cos(angle)*enemy.speed;
-        let offsetY = Math.sin(angle)*enemy.speed;
+        let offsetX = Math.cos(angle) * enemy.speed;
+        let offsetY = Math.sin(angle) * enemy.speed ;
 
         enemy.position[0] += offsetX;
         enemy.position[1] += offsetY;
+
+        let length = getDistance(enemy.position,nextWayPoint);
+
+        console.log(enemy.id,angle,length);
+
+        if(length <= 0.01) {
+            enemy.position = nextWayPoint;
+            enemy.wayPointIndex++;
+            console.log("ID"+enemy.id,"length<=3: "+nextWayPoint,"angle: "+angle);
+        }
     }
 
     drawEnemies() { // from renderEnemies()
-        console.log("drawEnemies");
+        // console.log("drawEnemies");
         towerGame.enemies.forEach(enemy => {
             let enemyImg = enemy.image;
             // Do the enemy walking animation
             // TODO: change the direction of enemy based on the waypath
-            towerGame.enemyCTX.drawImage(enemyImg,enemy.animaLoop*32,0,32,32,enemy.position[0],enemy.position[1],32,32,);
+            let direction;
+
+            // use difference sprite's part according to angle
+            if (enemy.angle>=45 && enemy.angle<=135)    { direction = 0; } // direction down
+            if (enemy.angle>-45 && enemy.angle<45)      { direction = 1; } // direction right
+            if (enemy.angle>=-135 && enemy.angle<=-45)  { direction = 2; } // direction up
+            if (enemy.angle<-135 || enemy.angle>135)    { direction = 3; } // direction left
+
+            towerGame.enemyCTX.drawImage(enemyImg,
+                enemy.animaLoop * enemy.size, direction * enemy.size, enemy.size, enemy.size,
+                enemy.position[0] - enemy.size/2,enemy.position[1]- enemy.size/2,enemy.size,enemy.size);
 
             // more enemy's speed more animation fast
             enemy.animaInterval++;
@@ -240,8 +286,21 @@ class Game {
                 enemy.animaLoop++;
                 enemy.animaInterval = 0;
             }
+
             if(enemy.animaLoop >= 4) enemy.animaLoop = 0;
+
+            towerGame.drawEnemyHealpoint(enemy);
         });
+    }
+
+    drawEnemyHealpoint(enemy) {
+        let red = (100-enemy.healPoint)*255/100;
+        let green = (enemy.healPoint/100)*255;
+        let color = `rgb(${red},${green},0)`;
+        let currentHp = 100;
+        towerGame.enemyCTX.fillStyle = color;
+        // draw the enemy's HP
+        towerGame.enemyCTX.fillRect(enemy.position[0]-3,enemy.position[1]-10, 10 * enemy.healPoint/currentHp,2);
     }
 
     renderTower() {

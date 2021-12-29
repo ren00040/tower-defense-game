@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 22:38:00
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-27 00:43:40
+ * @LastEditTime: 2021-12-28 03:19:59
  * @FilePath: /tower-defense-game/js/data.js
  */
 
@@ -18,7 +18,7 @@ const level1 = {
                 [3,20]],
 
     waypath: [ [325,0],
-               [323,180],
+               [330,180],
                [280,220],
                [240,240],
                [170,290],

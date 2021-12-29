@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-28 00:51:23
+ * @LastEditTime: 2021-12-29 01:41:48
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -20,7 +20,9 @@ class Eenmy {
         this.animaLoop = 0;
         this.animaInterval = 0;
         this.angle;
-        this.step;
+        this.step = 0;
+        this.angle;
+        this.size;
     }
 }
 
@@ -70,6 +72,8 @@ function spawnEnemy(enemyID,wave) {
     // set enemy's style
     enemy.image = new Image();
     enemy.image.src = "assets/enemies/fox.png";
+    enemy.size = 32;
+    enemy.healPoint = 100;
 
     // Put the new enemy into towerGame.enemies
     towerGame.enemies.push(enemy);
