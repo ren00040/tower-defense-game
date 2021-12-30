@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-29 01:41:37
+ * @LastEditTime: 2021-12-30 00:32:50
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -15,6 +15,7 @@ const frame_rate = 25; // game frame rate: refresh once per 40 milliseconds: 100
 var gameWrap; // contains the game's window
 const canvasWidth = 700; // Initialize game canvas width
 const canvasHight = 600; // Initialize game canvas hight
+var updateTimeoutID;
 // TODO: add more global variables
 
 // game setup
@@ -86,9 +87,19 @@ function intializeCanvas() {
     */
     const bulletCanvas = document.querySelector("#bulletsCanvas");
     // get CTX(enemy canvas)
-    towerGame.enemyCTX = bulletCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
+    towerGame.bulletCTX = bulletCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
     bulletCanvas.width = canvasWidth;
     bulletCanvas.height = canvasHight;
+
+    /*
+    * Initialize the copyright canvas
+    * Get CTX(copyright canvas) and set canvas's width and height
+    */
+    const copyrightCanvas = document.querySelector("#copyrightCanvas");
+    // get CTX(enemy canvas)
+    towerGame.copyrightCTX = copyrightCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
+    copyrightCanvas.width = canvasWidth;
+    copyrightCanvas.height = canvasHight;
 }
 
 // Draw the game menu
@@ -155,7 +166,6 @@ function drawGameMenu() {
             }
         });
     });
-    console.log("ending draw game menu")
 }
 
 // Game Exit
@@ -172,6 +182,7 @@ function credits() {
 class Game {
     constructor(){
         this.level = 1; // Current level; Game starts from the frist level
+        this.endPoint;
         this.enemies = []; 
         this.towers = [];
         this.bullets = []
@@ -182,28 +193,32 @@ class Game {
         this.enemyCTX;
         this.bulletCTX;
         this.mapSprite = new Image(); //the game background image
+        this.gameover = false;
     }
 
     update() { //from gameUpdate()
+
         // update enemies
-        towerGame.renderEnemies();
+        this.renderEnemies();
         // update towers
+        this.updateTowers();
         // update bullets
+        this.renderBullets()
         // update UI
+        this.updateUI();
     }
 
     renderEnemies() { // from updat()
         // clear enemy canvas
-        towerGame.enemyCTX.clearRect(0,0,canvasWidth,canvasHight);
+        this.enemyCTX.clearRect(0,0,canvasWidth,canvasHight);
 
-        towerGame.updateEnemiesPosition();
-        towerGame.drawEnemies();
+        this.updateEnemiesPosition();
+        this.drawEnemies();
     }
 
     updateEnemiesPosition() { // from renderEnemies()
-        towerGame.enemies.forEach(enemy => {
-            enemy.speed = 1; // set enemy's speed;
-            towerGame.calculateEnemyPositon(enemy);
+        this.enemies.forEach(enemy => {
+            this.calculateEnemyPositon(enemy);
         });
     }
 
@@ -230,41 +245,21 @@ class Game {
         enemy.stepIndex++;
 
         // if enemy arrives the waypoint then turn into the next waypoint
+
         if(enemy.stepIndex > enemy.step) {
             enemy.stepIndex = 0;
             enemy.wayPointIndex++;
-        }
-    }
 
-    anotherCalculateEnemyPositon(enemy) { // from updateEnemiesPosition()
-        let nextWayPointX = levels[currentLevel].waypath[enemy.wayPointIndex+1][0];
-        let nextWayPointY = levels[currentLevel].waypath[enemy.wayPointIndex+1][1];
-        let nextWayPoint = [nextWayPointX, nextWayPointY];
-
-        // the direction from enemy to next way point
-        let angle = angleBetweenPoints(enemy.position, nextWayPoint);
-
-        // the step per frame
-        let offsetX = Math.cos(angle) * enemy.speed;
-        let offsetY = Math.sin(angle) * enemy.speed ;
-
-        enemy.position[0] += offsetX;
-        enemy.position[1] += offsetY;
-
-        let length = getDistance(enemy.position,nextWayPoint);
-
-        console.log(enemy.id,angle,length);
-
-        if(length <= 0.01) {
-            enemy.position = nextWayPoint;
-            enemy.wayPointIndex++;
-            console.log("ID"+enemy.id,"length<=3: "+nextWayPoint,"angle: "+angle);
+            if(enemy.wayPointIndex == levels[currentLevel].waypath.length-1) {
+                shakeMap();
+                this.destoryEnemy();
+            }
         }
     }
 
     drawEnemies() { // from renderEnemies()
         // console.log("drawEnemies");
-        towerGame.enemies.forEach(enemy => {
+        this.enemies.forEach(enemy => {
             let enemyImg = enemy.image;
             // Do the enemy walking animation
             // TODO: change the direction of enemy based on the waypath
@@ -276,7 +271,7 @@ class Game {
             if (enemy.angle>=-135 && enemy.angle<=-45)  { direction = 2; } // direction up
             if (enemy.angle<-135 || enemy.angle>135)    { direction = 3; } // direction left
 
-            towerGame.enemyCTX.drawImage(enemyImg,
+            this.enemyCTX.drawImage(enemyImg,
                 enemy.animaLoop * enemy.size, direction * enemy.size, enemy.size, enemy.size,
                 enemy.position[0] - enemy.size/2,enemy.position[1]- enemy.size/2,enemy.size,enemy.size);
 
@@ -289,7 +284,7 @@ class Game {
 
             if(enemy.animaLoop >= 4) enemy.animaLoop = 0;
 
-            towerGame.drawEnemyHealpoint(enemy);
+            this.drawEnemyHealpoint(enemy);
         });
     }
 
@@ -298,23 +293,34 @@ class Game {
         let green = (enemy.healPoint/100)*255;
         let color = `rgb(${red},${green},0)`;
         let currentHp = 100;
-        towerGame.enemyCTX.fillStyle = color;
+        this.enemyCTX.fillStyle = color;
         // draw the enemy's HP
-        towerGame.enemyCTX.fillRect(enemy.position[0]-3,enemy.position[1]-10, 10 * enemy.healPoint/currentHp,2);
+        this.enemyCTX.fillRect(enemy.position[0]-3,enemy.position[1]-10, 10 * enemy.healPoint/currentHp,2);
     }
 
-    renderTower() {
+    destoryEnemy() {
+        this.enemies.shift();
+        this.life --;
+        if(this.life <= 0) this.gameOver();
+        console.log("destory an enemy");
+    }
+
+    updateTowers() {
         
     }
 
     renderBullets() {
-
+        
     }
 
     updateUI() {
         
     }
 
+    gameOver() {
+        console.log("game over");
+        this.gameover = true;
+    }
 }
 
 // Game start
@@ -339,12 +345,16 @@ function loadingBar() {
     // Loading Scene
 function loadScene() { // from start()
     let currentlevel = towerGame.level;
+    towerGame.life = levels[currentlevel].life;
     towerGame.mapCTX.clearRect(0,0,mapCanvas.width,mapCanvas.height);
     // loading battle map base on current towerGame.level
     towerGame.mapSprite.src = "/assets/images/levels/level"+towerGame.level+".png";
     towerGame.mapSprite.onload = function(){
         towerGame.mapCTX.drawImage(towerGame.mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
     }
+
+    // game copyright
+    copyright();
 
     /*
      * draw the settle places which can build towers
@@ -400,22 +410,88 @@ function loadScene() { // from start()
        waypoint.style.top = positionY + "px";
 
        waypathWrap.append(waypoint);
+       towerGame.endPoint = coordinate;
    }
-
-   console.log("battle map loading complete");
 }
 
+    // Draw the Battle Map UI
 function drawUI() { // from start()
     console.log("TODO: Draw UI");
 
+}
+
+/*
+ * shake the mapCanvas when an enemy arrived the base
+ * reference from https://stackoverflow.com/questions/28023696/html-canvas-animation-which-incorporates-a-shaking-effect/28025113
+ */
+function startShake() {
+    shakeStartTime=Date.now();
+}
+
+var shakeDuration = 200;
+var shakeStartTime = -1;
+
+function preShake() {
+  if (shakeStartTime ==-1) return;
+  var dt = Date.now()-shakeStartTime;
+  if (dt>shakeDuration) {
+      shakeStartTime = -1; 
+      return;
+  }
+  var easingCoef = dt / shakeDuration;
+  var easing = Math.pow(easingCoef-1,3) +1;
+  towerGame.mapCTX.save();  
+  var dx = easing*(Math.cos(dt*0.1 ) + Math.cos( dt *0.3115))*15;
+  var dy = easing*(Math.sin(dt*0.05) + Math.sin(dt*0.057113))*15;
+  towerGame.mapCTX.translate(dx, dy);  
+}
+
+function postShake() {
+  if (shakeStartTime ==-1) return;
+  towerGame.mapCTX.restore();
+}
+
+function drawThings() {  
+    const mapSprite = new Image();
+    mapSprite.src = "/assets/images/levels/level"+towerGame.level+".png";
+    towerGame.mapCTX.drawImage(mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
+
+}
+
+function animate() {
+  // keep animation alive
+  requestAnimationFrame(animate);
+  // erase
+  towerGame.mapCTX.clearRect(0,0,mapCanvas.width, mapCanvas.height);
+  //
+  preShake();
+  //
+  towerGame.mapCTX.clearRect(0,0,mapCanvas.width,mapCanvas.height);
+  drawThings();
+  postShake();
+}
+
+function shakeMap() {
+    startShake();
+    animate();
+}
+
+
+function copyright() { // from loadingScene()
+    let copyrightText = "Copyright 2022 @ Fossil Studio";
+    towerGame.bulletCTX.textAlign = "end";
+    towerGame.bulletCTX.fillText(copyrightText,canvasWidth-20,canvasHight-20);
 }
 
     // Loading Player Info
 
     // Battle Start
 function gameUpdate() { //from loadingLevel()
+    console.log("gameUpdate");
     towerGame.update();
-    window.setTimeout(gameUpdate, 1000/frame_rate); // come back here every interval; 24 times per second
+    if(!towerGame.gameover) {
+        updateTimeoutID = window.setTimeout(gameUpdate, 1000/frame_rate); // come back here every interval; 24 times per second
+    }
 }
 
     // Battle Fail
