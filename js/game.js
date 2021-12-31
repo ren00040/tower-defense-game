@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-30 00:32:50
+ * @LastEditTime: 2021-12-31 00:11:14
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -108,10 +108,12 @@ function drawGameMenu() {
     
     // loading background-image
     // gameWrap.style.backgroundImage = "url('https://images.unsplash.com/photo-1513151233558-d860c5398176?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')";
-    towerGame.mapSprite.src = "https://images.unsplash.com/photo-1513151233558-d860c5398176?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+    towerGame.mapSprite.src = "https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
     towerGame.mapSprite.onload = function(){
         towerGame.mapCTX.drawImage(towerGame.mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
     }
+
+    copyright();
 
     let gameMenu = document.querySelector("#game-menu");
     
@@ -273,7 +275,7 @@ class Game {
 
             this.enemyCTX.drawImage(enemyImg,
                 enemy.animaLoop * enemy.size, direction * enemy.size, enemy.size, enemy.size,
-                enemy.position[0] - enemy.size/2,enemy.position[1]- enemy.size/2,enemy.size,enemy.size);
+                enemy.position[0] - enemy.size/2, enemy.position[1]- enemy.size/2,enemy.size,enemy.size);
 
             // more enemy's speed more animation fast
             enemy.animaInterval++;
@@ -295,7 +297,7 @@ class Game {
         let currentHp = 100;
         this.enemyCTX.fillStyle = color;
         // draw the enemy's HP
-        this.enemyCTX.fillRect(enemy.position[0]-3,enemy.position[1]-10, 10 * enemy.healPoint/currentHp,2);
+        this.enemyCTX.fillRect(enemy.position[0]-3,enemy.position[1]-enemy.size/2, 10 * enemy.healPoint/currentHp,2);
     }
 
     destoryEnemy() {
@@ -421,7 +423,7 @@ function drawUI() { // from start()
 }
 
 /*
- * shake the mapCanvas when an enemy arrived the base
+ * shake the mapCanvas when an enemy arrived the end
  * reference from https://stackoverflow.com/questions/28023696/html-canvas-animation-which-incorporates-a-shaking-effect/28025113
  */
 function startShake() {

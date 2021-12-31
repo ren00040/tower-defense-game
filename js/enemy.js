@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-29 23:30:35
+ * @LastEditTime: 2021-12-30 23:58:23
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -74,7 +74,7 @@ function spawnEnemy(enemyID,wave) {
     enemy.image.src = "assets/enemies/fox.png";
     enemy.size = 32;
     enemy.healPoint = 100;
-    enemy.speed = 10; // set enemy's speed;
+    enemy.speed = 1; // set enemy's speed;
 
     // Put the new enemy into towerGame.enemies
     towerGame.enemies.push(enemy);
