@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-17 00:05:51
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-29 23:03:00
+ * @LastEditTime: 2021-12-31 23:13:12
  * @FilePath: /tower-defense-game/css/style.css
  */
 
@@ -40,10 +40,8 @@
  }
 
  #game-menu {
+     top: 20%;
      position: absolute;
-     top:50%;
-     left: 50%; 
-     transform: translate(-50%, -50%);
  }
 
  .menu-button {

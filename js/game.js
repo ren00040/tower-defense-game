@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-31 00:38:43
+ * @LastEditTime: 2021-12-31 23:14:16
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -27,11 +27,15 @@ function gameSetup() {
     gameWrap = document.createElement("div");
     gameWrap.setAttribute("id","game-wrap");
     gameWrap.classList.add("game-wrap")
+    let marginleft = -canvasWidth/2;
 
     document.body.append(gameWrap);
-    gameWrap.style.display = "block";
+    // gameWrap.style.display = "block";
     gameWrap.style.width = canvasWidth+"px";
     gameWrap.style.height = canvasHight+"px";
+    
+    gameWrap.style.left = "50%";
+    gameWrap.style.marginLeft = marginleft.toString()+"px";
 
     console.log("the game wrap is created");
     
@@ -42,6 +46,9 @@ function gameSetup() {
     let gameMenu = document.createElement("div");
     gameMenu.setAttribute("id","game-menu");
     gameMenu.setAttribute("class","game-menu");
+
+    gameMenu.style.left = "50%";
+    gameMenu.style.marginLeft = "-110px";
 
     document.querySelector("#game-wrap").append(gameMenu);
     console.log("the game menu object is created");
@@ -57,10 +64,13 @@ function intializeCanvas() {
     * Get CTX(map) and set canvas's width and height
     */
     const mapCanvas = document.querySelector("#mapCanvas");
+    let marginleft = -canvasWidth/2;
     // get CTX(map)
     towerGame.mapCTX = mapCanvas.getContext("2d") // Create a CanvasRenderingContext 2D Object
     mapCanvas.width = canvasWidth;
     mapCanvas.height = canvasHight;
+    mapCanvas.style.left = "50%";
+    mapCanvas.style.marginLeft = marginleft.toString()+"px";
 
     /*
     * Initialize the battle canvas
@@ -70,7 +80,9 @@ function intializeCanvas() {
     // get CTX(battle canvas)
     towerGame.towerCTX = towerCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
     towerCanvas.width = canvasWidth;
-    towerCanvas.height = canvasHight
+    towerCanvas.height = canvasHight;
+    towerCanvas.style.left = "50%";
+    towerCanvas.style.marginLeft = marginleft.toString()+"px";
     /*
     * Initialize the enemy canvas
     * Get CTX(enemy canvas) and set canvas's width and height
@@ -80,6 +92,8 @@ function intializeCanvas() {
     towerGame.enemyCTX = enemyCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
     enemyCanvas.width = canvasWidth;
     enemyCanvas.height = canvasHight;
+    enemyCanvas.style.left = "50%";
+    enemyCanvas.style.marginLeft = marginleft.toString()+"px";
 
     /*
     * Initialize the bullets canvas
@@ -90,6 +104,8 @@ function intializeCanvas() {
     towerGame.bulletCTX = bulletCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
     bulletCanvas.width = canvasWidth;
     bulletCanvas.height = canvasHight;
+    bulletCanvas.style.left = "50%";
+    bulletCanvas.style.marginLeft = marginleft.toString()+"px";
 
     /*
     * Initialize the copyright canvas
@@ -100,6 +116,8 @@ function intializeCanvas() {
     towerGame.copyrightCTX = copyrightCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
     copyrightCanvas.width = canvasWidth;
     copyrightCanvas.height = canvasHight;
+    copyrightCanvas.style.left = "50%";
+    copyrightCanvas.style.marginLeft = marginleft.toString()+"px";
 }
 
 // Draw the game menu
@@ -481,8 +499,8 @@ function shakeMap() {
 
 function copyright() { // from loadingScene()
     let copyrightText = "Copyright 2022 @ Fossil Studio";
-    towerGame.bulletCTX.textAlign = "end";
-    towerGame.bulletCTX.fillText(copyrightText,canvasWidth-20,canvasHight-20);
+    towerGame.copyrightCTX.textAlign = "end";
+    towerGame.copyrightCTX.fillText(copyrightText,canvasWidth-20,canvasHight-20);
 }
 
     // Loading Player Info
