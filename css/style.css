@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-17 00:05:51
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-31 23:13:12
+ * @LastEditTime: 2021-12-31 23:53:04
  * @FilePath: /tower-defense-game/css/style.css
  */
 
@@ -49,4 +49,8 @@
      width: 180px;
      height: 55px;
      background-size: cover;
+ }
+
+ .ui-wrap {
+    position: absolute;
  }

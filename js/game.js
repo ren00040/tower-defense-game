@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-31 23:14:16
+ * @LastEditTime: 2022-01-01 00:03:46
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -214,6 +214,7 @@ class Game {
         this.bulletCTX;
         this.mapSprite = new Image(); //the game background image
         this.gameover = false;
+        this.gameWave = 1;
     }
 
     update() { //from gameUpdate()
@@ -323,6 +324,13 @@ class Game {
         this.life --;
         if(this.life <= 0) this.gameOver();
         console.log("destory an enemy");
+
+        if(this.enemies.length == 0) towerGame.newWave();
+    }
+
+    newWave() {
+        towerGame.wavesNum++;
+        console.log("TODO: a new wave spawning");
     }
 
     updateTowers() {
@@ -437,7 +445,20 @@ function loadScene() { // from start()
     // Draw the Battle Map UI
 function drawUI() { // from start()
     console.log("TODO: Draw UI");
+    // create UI wrap
+    let uiWrap = document.createElement("div");
+    uiWrap.setAttribute("id","ui-wrap");
+    uiWrap.setAttribute("class","ui-wrap");
+    document.querySelector("#game-wrap").append(uiWrap);
 
+    // draw the number of waves
+    let wavesNum = document.createElement("div");
+    let currentLevel = towerGame.level;
+    wavesNum.setAttribute("class","waveNum");
+    wavesNum.innerHTML = `
+        <p> WAVE ${towerGame.gameWave} / ${levels[currentLevel].enemyWave.length} </p>
+    `
+    document.querySelector("#ui-wrap").append(wavesNum);
 }
 
 /*
@@ -478,9 +499,9 @@ function drawThings() {
 
 }
 
-function animate() {
+function shakeAnimate() {
   // keep animation alive
-  requestAnimationFrame(animate);
+  requestAnimationFrame(shakeAnimate);
   // erase
   towerGame.mapCTX.clearRect(0,0,mapCanvas.width, mapCanvas.height);
   //
@@ -493,7 +514,7 @@ function animate() {
 
 function shakeMap() {
     startShake();
-    animate();
+    shakeAnimate();
 }
 
 
@@ -507,7 +528,6 @@ function copyright() { // from loadingScene()
 
     // Battle Start
 function gameUpdate() { //from loadingLevel()
-    console.log("gameUpdate");
     towerGame.update();
     if(!towerGame.gameover) {
         updateTimeoutID = window.setTimeout(gameUpdate, 1000/frame_rate); // come back here every interval; 24 times per second
