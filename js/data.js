@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 22:38:00
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-28 03:19:59
+ * @LastEditTime: 2022-01-01 00:29:01
  * @FilePath: /tower-defense-game/js/data.js
  */
 
@@ -12,7 +12,7 @@ var currentLevel = 1;
 const level1 = {
     id: 1,
     gold: 100,
-    life: 10,
+    life: 20,
     enemyWave: [[1,10],
                 [2,15],
                 [3,20]],

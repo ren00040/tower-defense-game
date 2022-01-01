@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-30 23:58:23
+ * @LastEditTime: 2022-01-01 00:29:16
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -38,12 +38,12 @@ class EnemySpawner{
         
 // Spawn enemies
 // Setup an spawner
-function enemySpawner() {
+function enemySpawner(waveNum) {
     // Create spawner object and intialize the waves
     var spawner = new EnemySpawner();
     let currentLevel = towerGame.level;
     var waves = levels[currentLevel-1].enemyWave;
-    spawner.spawnWave = 0;
+    spawner.spawnWave = waveNum;
     // start Spawning the first wave
     startSpawning(spawner,waves[spawner.spawnWave]);
 }
@@ -74,7 +74,7 @@ function spawnEnemy(enemyID,wave) {
     enemy.image.src = "assets/enemies/fox.png";
     enemy.size = 32;
     enemy.healPoint = 100;
-    enemy.speed = 1; // set enemy's speed;
+    enemy.speed = 3; // set enemy's speed;
 
     // Put the new enemy into towerGame.enemies
     towerGame.enemies.push(enemy);

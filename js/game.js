@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-01 00:03:46
+ * @LastEditTime: 2022-01-01 00:55:25
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -208,13 +208,14 @@ class Game {
         this.bullets = []
         this.gold = 0;
         this.life = 0;
+        this.maxLife;
         this.mapCTX;
         this.towerCTX;
         this.enemyCTX;
         this.bulletCTX;
         this.mapSprite = new Image(); //the game background image
         this.gameover = false;
-        this.gameWave = 1;
+        this.gameWave = 0;
     }
 
     update() { //from gameUpdate()
@@ -322,6 +323,7 @@ class Game {
     destoryEnemy() {
         this.enemies.shift();
         this.life --;
+        console.log(this.life);
         if(this.life <= 0) this.gameOver();
         console.log("destory an enemy");
 
@@ -329,8 +331,9 @@ class Game {
     }
 
     newWave() {
-        towerGame.wavesNum++;
+        towerGame.gameWave++;
         console.log("TODO: a new wave spawning");
+        enemySpawner(towerGame.gameWave);
     }
 
     updateTowers() {
@@ -342,7 +345,17 @@ class Game {
     }
 
     updateUI() {
-        
+        let uiWarp = document.querySelector("#ui-wrap");
+        // update wave
+        let wavesNum = document.querySelector(".waveNum");
+        wavesNum.innerHTML = `
+            <p> WAVE ${towerGame.gameWave+1} / ${levels[currentLevel].enemyWave.length} </p>
+        `;
+
+        let playerLife = document.querySelector("#playerLife");
+        playerLife.innerHTML = `
+            <p> LIFE ${towerGame.life} / ${towerGame.maxLife} </p>
+        `
     }
 
     gameOver() {
@@ -360,7 +373,7 @@ function loadingLevel() {
     loadingBar();
     loadScene();
     drawUI();
-    enemySpawner();
+    enemySpawner(towerGame.wavesNum);
     gameUpdate();
 }
 
@@ -373,17 +386,16 @@ function loadingBar() {
     // Loading Scene
 function loadScene() { // from start()
     let currentlevel = towerGame.level;
-    towerGame.life = levels[currentlevel].life;
+    towerGame.life = levels[currentlevel-1].life;
+    towerGame.maxLife = levels[currentlevel-1].life;
+    towerGame.wavesNum = 0;
     towerGame.mapCTX.clearRect(0,0,mapCanvas.width,mapCanvas.height);
     // loading battle map base on current towerGame.level
     towerGame.mapSprite.src = "assets/images/levels/level"+towerGame.level+".png";
     towerGame.mapSprite.onload = function(){
         towerGame.mapCTX.drawImage(towerGame.mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
     }
-
-    // game copyright
-    copyright();
-
+    
     /*
      * draw the settle places which can build towers
      * Important!!! It's hard to click elements in canvas, so draw all towers and UI in the Html layer.
@@ -456,9 +468,17 @@ function drawUI() { // from start()
     let currentLevel = towerGame.level;
     wavesNum.setAttribute("class","waveNum");
     wavesNum.innerHTML = `
-        <p> WAVE ${towerGame.gameWave} / ${levels[currentLevel].enemyWave.length} </p>
+        <p> WAVE ${towerGame.gameWave+1} / ${levels[currentLevel].enemyWave.length} </p>
     `
     document.querySelector("#ui-wrap").append(wavesNum);
+
+    // draw the player's life
+    let playerLife = document.createElement("div");
+    playerLife.setAttribute("id","playerLife");
+    playerLife.innerHTML = `
+        <p> LIFE ${towerGame.life} / ${towerGame.maxLife} </p>
+    `
+    document.querySelector("#ui-wrap").append(playerLife);
 }
 
 /*
