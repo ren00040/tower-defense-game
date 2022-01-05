@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-03 23:19:40
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-04 23:12:12
+ * @LastEditTime: 2022-01-04 23:46:21
  * @FilePath: /tower-defense-game/js/ui.js
  */
 
@@ -182,9 +182,10 @@ function highSettlePoints() {
     let settlePoints = document.querySelectorAll(".settlePoint");
     settlePoints.forEach(point => {
         point.src = "assets/images/towers/settle-highlight.png";
+        // TODO: if settleable or enough gold
         point.onclick = function () {
             let newTower = new Tower();
-            newTower.drawTower();
+            newTower.drawTower(allTowerBtn,point);
         }
     });
 }

@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-03 23:41:29
+ * @LastEditTime: 2022-01-04 23:28:26
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -33,7 +33,6 @@ function gameSetup() {
     let marginleft = -canvasWidth/2;
 
     document.body.append(gameWrap);
-    // gameWrap.style.display = "block";
     gameWrap.style.width = canvasWidth+"px";
     gameWrap.style.height = canvasHight+"px";
     
@@ -42,6 +41,12 @@ function gameSetup() {
 
     console.log("the game wrap is created");
     
+    // Create a tower wrap
+    let towerWrap = document.createElement("div");
+    towerWrap.setAttribute("id","towerWrap");
+    towerWrap.setAttribute("class","towerWrap");
+    gameWrap.append(towerWrap);
+
     // Setup game canvas
     intializeCanvas();
 
