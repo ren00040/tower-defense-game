@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-02 23:10:22
+ * @LastEditTime: 2022-01-03 23:41:29
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -12,6 +12,7 @@
 // define all global variables
 var towerGame; // the global game object
 var gameUI; // the game UI
+var settlePoint;
 const frame_rate = 25; // game frame rate: refresh once per 40 milliseconds: 1000/25=40
 var gameWrap; // contains the game's window
 const canvasWidth = 700; // Initialize game canvas width
@@ -24,7 +25,7 @@ function gameSetup() {
     // Creat the game object
     towerGame = new Game();
     gameUI = new GameUI();
-
+    settlePoint = new SettlePoint();
     //setup game main container
     gameWrap = document.createElement("div");
     gameWrap.setAttribute("id","game-wrap");
@@ -366,135 +367,12 @@ class Game {
             <img src='${gameUI.goldIcon.src}'></img>
             <a>${towerGame.gold}</a>
         `;
-
     }
 
     gameOver() {
         console.log("game over");
         this.gameover = true;
     }
-}
-
-// Draw the Battle Map UI
-class GameUI {
-    constructor() {
-        this.uiWarp;
-        this.scorePanel;
-        this.waveIcon = new Image();
-        this.lifeIcon = new Image();
-        this.goldIcon = new Image();
-    }
-    drawUI() { // from loadingLevel()
-        // create the UI div under game wrap
-        this.drawUIWrap();
-        // draw game setting buttom
-        this.drawSetting();
-
-        // draw the score panel (gold, wave, life)
-        this.drawScorePanel();
-
-        // draw the tower panel
-        this.drawTowerPanel();
-    }
-
-    drawUIWrap() { // from drawUI()
-        // create UI wrap
-        this.uiWarp = document.createElement("div");
-        this.uiWarp.setAttribute("id","ui-wrap");
-        this.uiWarp.setAttribute("class","ui-wrap");
-        document.querySelector("#game-wrap").append(this.uiWarp);
-    }
-
-    drawSetting() { // from drawUI()
-        // draw setting button
-        let settingBTN = document.createElement("div");
-        settingBTN.setAttribute("id","settingBTN");
-        settingBTN.setAttribute("class","settingBTN");
-        let settingSize = 32;
-        this.uiWarp.append(settingBTN);
-        let settingIcon = new Image();
-        settingIcon.src = "assets/images/ui/setting.png"
-        settingBTN.append(settingIcon);
-
-        settingIcon.style.width = settingSize + "px";
-        settingIcon.style.height = settingSize + "px";
-        settingBTN.style.left = canvasWidth-settingSize +"px";
-
-        settingBTN.onclick = function() {
-            console.log("Click setting BTN","TODO: Setting Menu")
-        }
-    }
-
-    drawScorePanel() {
-        this.scorePanel = document.createElement("div");
-        this.scorePanel.setAttribute("id","scorePanel");
-        this.scorePanel.setAttribute("class","scorePanel");
-        this.uiWarp.append(this.scorePanel);
-
-        // draw the number of waves
-        let wavesNum = document.createElement("div");
-        let currentLevel = towerGame.level;
-        this.waveIcon.src = "assets/images/ui/wave.png";
-        wavesNum.setAttribute("class","waveNum");
-        wavesNum.innerHTML = `
-            <img src='${this.waveIcon.src}'></img>
-            <a>${towerGame.gameWave+1} / ${levels[currentLevel].enemyWave.length} </a>
-        `
-        this.scorePanel.append(wavesNum);
-    
-        // draw the player's life
-        let playerLife = document.createElement("div");
-        this.lifeIcon.src = "assets/images/ui/life.png";
-        playerLife.setAttribute("id","playerLife");
-        playerLife.innerHTML = `
-            <img src='${this.lifeIcon.src}'></img>
-            <a>${towerGame.life} / ${towerGame.maxLife}</a>
-        `
-        this.scorePanel.append(playerLife);
-
-        // draw the number of gold
-        let gold = document.createElement("div");
-        this.goldIcon.src = "assets/images/ui/gold.png";
-        gold.setAttribute("id","gold");
-        gold.innerHTML = `
-            <img src='${this.goldIcon.src}'></img>
-            <a>${towerGame.gold}</a>
-        `
-        this.scorePanel.append(gold);
-    }
-
-    drawTowerPanel() {
-       let towerPanel = document.createElement("div");
-       towerPanel.setAttribute("id","towerPanel");
-       towerPanel.setAttribute("class","towerPanel");
-       this.uiWarp.append(towerPanel);
-
-       let archerCard = new Image();
-       let cannonCard = new Image();
-
-       let iconSize = 64;
-
-       archerCard.style.width = iconSize+"px";
-       archerCard.style.height = iconSize+"px";
-
-       cannonCard.style.width = iconSize+"px";
-       cannonCard.style.height = iconSize+"px";
-
-       archerCard.src = "assets/images/towers/archer.png";
-       cannonCard.src = "assets/images/towers/cannon.png";
-
-       towerPanel.append(archerCard);
-       towerPanel.append(cannonCard);
-
-       archerCard.onclick = function() {
-           console.log("archer BTN click");
-       }
-
-       cannonCard.onclick = function() {
-           console.log("cannon BTN click");
-       }
-
-    }  
 }
 
 // Game start
@@ -504,7 +382,7 @@ function loadingLevel() {
     console.log("Game Start");
     document.querySelector("#game-menu").remove();
     loadingBar();
-    loadScene();
+    loadingScene();
     gameUI.drawUI();
     enemySpawner(towerGame.wavesNum);
     gameUpdate();
@@ -517,7 +395,7 @@ function loadingBar() {
 }
 
     // Loading Scene
-function loadScene() { // from loadingLevel()
+function loadingScene() { // from loadingLevel()
     // Initailize current stage data
     let currentlevel = towerGame.level;
     towerGame.life = levels[currentlevel-1].life;
@@ -531,31 +409,7 @@ function loadScene() { // from loadingLevel()
         towerGame.mapCTX.drawImage(towerGame.mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
     }
     
-    /*
-     * draw the settle places which can build towers
-     * Important!!! It's hard to click elements in canvas, so draw all towers and UI in the Html layer.
-    */
-    let settlePlaces = levels[currentlevel-1].settlePlace;
-    const settleWrap = document.createElement("div");
-    settleWrap.setAttribute("id","settleWrap");
-    document.querySelector("#game-wrap").append(settleWrap);
-
-    // create and render the settle places
-    for(const[key, coordinate] of settlePlaces.entries()) {
-        let positionX = coordinate[0];
-        let positionY = coordinate[1];
-        
-        let settlePoint = new Image();
-        settlePoint.setAttribute("id","settlePoint"+key);
-        settlePoint.setAttribute("class","settlePoint");
-        settlePoint.src = "assets/images/towers/settle.png";
-        settlePoint.style.position = "absolute";
-        settlePoint.style.left = positionX + "px";
-        settlePoint.style.top  = positionY + "px";
-
-        // rendering settlePlace
-        settleWrap.append(settlePoint);
-    }
+    drawSettlePoints();
     
     /*
      * draw the waypath
@@ -588,6 +442,8 @@ function loadScene() { // from loadingLevel()
        towerGame.endPoint = coordinate;
    }
 }
+
+
 
 /*
  * shake the mapCanvas when an enemy arrived the end

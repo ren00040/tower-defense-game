@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 22:38:00
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-01 00:29:01
+ * @LastEditTime: 2022-01-04 22:31:58
  * @FilePath: /tower-defense-game/js/data.js
  */
 
@@ -31,7 +31,9 @@ const level1 = {
     
     settlePlace: [[120,200],
                   [200,300],
-                  [300,400]]
+                  [300,400]],
+    
+    availableTower: [1,2],
 }
 
 const level2 = {
@@ -56,7 +58,9 @@ const level2 = {
 
     settlePlace: [[120,200],
                   [200,300],
-                  [300,400]]
+                  [300,400]],
+
+    availableTower: [1,2,3],
 }
 
 const levels = [level1,level2];

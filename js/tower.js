@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-02 00:33:05
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-02 00:40:10
+ * @LastEditTime: 2022-01-04 23:12:03
  * @FilePath: /tower-defense-game/js/tower.js
  */
 
@@ -20,6 +20,8 @@ class Tower {
 
     drawTower() {
         // draw a tower
+        console.log("TODO: settle a tower");
+
     }
 
     drawTowerRange() {
