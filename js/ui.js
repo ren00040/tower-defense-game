@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-03 23:19:40
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-04 23:46:21
+ * @LastEditTime: 2022-01-05 20:18:44
  * @FilePath: /tower-defense-game/js/ui.js
  */
 
@@ -194,6 +194,9 @@ function dishighSettlePoints() {
     let settlePoints = document.querySelectorAll(".settlePoint");
     settlePoints.forEach(point => {
         point.src = "assets/images/towers/settle.png";
+        point.onclick = function () {
+            console.log("null");
+        }
     });
 }
 
