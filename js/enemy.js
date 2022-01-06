@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-01 00:29:16
+ * @LastEditTime: 2022-01-05 22:04:52
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -29,7 +29,7 @@ class Eenmy {
 class EnemySpawner{
     constructor() {
         this.enemies = [];
-        this.spawnInterval = 2000; // milliseconds between two enemies
+        this.spawnInterval = 1000; // milliseconds between two enemies
         this.spawnWave;
         this.waveInterval;
         this.waveDelay = 3000; // milliseconds between two waves
