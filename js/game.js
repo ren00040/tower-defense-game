@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-04 23:28:26
+ * @LastEditTime: 2022-01-05 21:13:16
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -318,9 +318,11 @@ class Game {
         });
     }
 
+    // rendering enemy's healpoints
     drawEnemyHealpoint(enemy) {
         let red = (100-enemy.healPoint)*255/100;
         let green = (enemy.healPoint/100)*255;
+        // set a gradient color; green means healthy and red means in danger
         let color = `rgb(${red},${green},0)`;
         let currentHp = 100;
         this.enemyCTX.fillStyle = color;
@@ -355,19 +357,19 @@ class Game {
     updateUI() {
         let uiWarp = document.querySelector("#ui-wrap");
         // update wave
-        let wavesNum = document.querySelector(".waveNum");
+        let wavesNum = scorePanel.querySelector(".waveNum");
         wavesNum.innerHTML = `
             <img src='${gameUI.waveIcon.src}'></img>
             <a> ${towerGame.gameWave+1} / ${levels[currentLevel].enemyWave.length} </a>
         `;
 
-        let playerLife = document.querySelector("#playerLife");
+        let playerLife = scorePanel.querySelector("#playerLife");
         playerLife.innerHTML = `
             <img src='${gameUI.lifeIcon.src}'></img>
             <a>${towerGame.life} / ${towerGame.maxLife}</a>
         `;
 
-        let playerGold = document.querySelector("#gold");
+        let playerGold = scorePanel.querySelector("#gold");
         playerGold.innerHTML = `
             <img src='${gameUI.goldIcon.src}'></img>
             <a>${towerGame.gold}</a>

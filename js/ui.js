@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-03 23:19:40
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-05 20:18:44
+ * @LastEditTime: 2022-01-05 21:56:05
  * @FilePath: /tower-defense-game/js/ui.js
  */
 
@@ -20,6 +20,7 @@ class towerSelectBtn {
         this.name;
         this.icon = new Image();
         this.isSelected = false;
+        this.cost;
     }
 
     onclick() {
@@ -29,6 +30,9 @@ class towerSelectBtn {
     }
   
     btnToggle() {
+        let btn = towerPanel.querySelector(".towerBtn"+this.name);
+
+        // if this btn was selected
         if(this.isSelected) {
             // clear all btn
             this.unselectedAllbtn();
@@ -36,17 +40,20 @@ class towerSelectBtn {
         }else{
             // clear all btn
             this.unselectedAllbtn();
+
             // seleting the btn which we need
-            this.icon.style.background = "grey";
+            btn.style.background = "grey";
             this.isSelected = true;
+
             highSettlePoints();
         }
     }
 
     unselectedAllbtn() {
-        allTowerBtn.forEach(btn => {
-            btn.isSelected = false;
-            btn.icon.style.background = "none";
+        let towerBtn = towerPanel.querySelectorAll(".towerBtn");
+        towerBtn.forEach(btn => {
+            btn.style.background = null;
+            this.isSelected = false;
         });
     }
 }
@@ -154,25 +161,40 @@ class GameUI {
             switch (towerID) {
                 case 1:
                     towerBtn.name = "archer";
+                    towerBtn.cost = 50;
                     break;
 
                 case 2:
                     towerBtn.name = "cannon";
+                    towerBtn.cost = 80;
                     break;
 
                 case 3:
                     towerBtn.name = "ice";
+                    towerBtn.cost = 75;
                     break;
                 
                 default:
                     break;
             }
             towerBtn.icon.src = "assets/images/towers/"+towerBtn.name+".png";
-            towerBtn.icon.onclick = function () {
+            // collect all buttons
+            allTowerBtn.push(towerBtn);
+
+            let towerBtnContents = document.createElement("div");
+            towerBtnContents.setAttribute("class","towerBtn towerBtn"+towerBtn.name);
+            towerBtnContents.innerHTML = `
+                <img src="assets/images/towers/${towerBtn.name}.png"></img>
+                <a>${towerBtn.cost}</a>
+            `
+
+            // set the tower button click event
+            towerBtnContents.onclick = function () {
                 towerBtn.onclick();
             }
-            allTowerBtn.push(towerBtn);
-            towerPanel.append(towerBtn.icon);
+
+            // rendering towerBtn contents
+            towerPanel.append(towerBtnContents);
         });
 
     }  
