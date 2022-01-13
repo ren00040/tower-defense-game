@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-05 21:13:16
+ * @LastEditTime: 2022-01-13 10:56:56
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -333,7 +333,6 @@ class Game {
     destoryEnemy() {
         this.enemies.shift();
         this.life --;
-        console.log(this.life);
         if(this.life <= 0) this.gameOver();
         console.log("destory an enemy");
 
@@ -342,12 +341,31 @@ class Game {
 
     newWave() {
         towerGame.gameWave++;
-        console.log("TODO: a new wave spawning");
         enemySpawner(towerGame.gameWave);
     }
 
     updateTowers() {
-        
+        alltowers.forEach(tower => {
+            this.detectEnemy(tower);
+        });
+    }
+
+    detectEnemy(tower) {
+        let enemyInRange = [];
+        towerGame.enemies.forEach(enemy => {
+            let towerPos = [pxToNum(tower.position[0]), pxToNum(tower.position[1])];
+            let enemyPos = [enemy.position[0], enemy.position[1]];
+
+            let distance = getDistance(towerPos,enemyPos);
+            
+            console.log("not find an enemy");
+
+            if(distance <= tower.range) {
+                enemyInRange.push(enemy);
+                console.log("find an enemy");
+                tower.startSpawning(tower,enemyInRange);
+            }
+        });
     }
 
     renderBullets() {
@@ -511,7 +529,9 @@ function shakeMap() {
 
 function copyright() { // from loadingScene()
     let copyrightText = "Copyright 2022 @ Fossil Studio";
+    let working = "I'm working on it, please be patient for the update.";
     towerGame.copyrightCTX.textAlign = "end";
+    towerGame.copyrightCTX.fillText(working,canvasWidth-20,canvasHight-35);
     towerGame.copyrightCTX.fillText(copyrightText,canvasWidth-20,canvasHight-20);
 }
 

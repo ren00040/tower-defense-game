@@ -1,14 +1,17 @@
 /*
  * @Date: 2022-01-02 00:33:05
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-05 22:05:19
+ * @LastEditTime: 2022-01-09 23:28:48
  * @FilePath: /tower-defense-game/js/tower.js
  */
+
+var alltowers = []
 
 class Tower {
     constructor() {
         this.id = 0;
         this.name;
+        this.cost;
         this.type;
         this.range;
         this.minDamage;
@@ -16,8 +19,9 @@ class Tower {
         this.img = new Image();
         this.position;
         this.isShoot = false;
-        this.bullets;
-        this.cost;
+        this.bullets = [];
+        this.rate;
+        this.target;
     }
 
     drawTower(allButtons,settlePoint) {
@@ -36,7 +40,6 @@ class Tower {
 
         this.initailizeTower();
 
-        console.log(this);
         if(this.cost <= towerGame.gold) {
             // create the new tower and set image
             let newTower = document.createElement("div");
@@ -59,6 +62,8 @@ class Tower {
             newTower.style.top = newTower.position[1];
 
             document.querySelector("#towerWrap").append(newTower);
+            this.position = newTower.position;
+            alltowers.push(this);
             settlePoint.remove();
 
             towerGame.gold -= this.cost;
@@ -77,8 +82,6 @@ class Tower {
         let left = pxToNum(tower.position[0])+24;
         let top = pxToNum(tower.position[1])+24;
 
-        console.log(this.range);
-
         ctx.beginPath();
         ctx.arc(left, top, this.range, 0, 2 * Math.PI);
         ctx.stroke();
@@ -94,7 +97,7 @@ class Tower {
         
             case "cannon":
                 this.cost = 80;
-                this.range = 80;
+                this.range = 100;
                 break;
 
             case "ice":
@@ -105,5 +108,29 @@ class Tower {
             default:
                 break;
         }
+    }
+
+    // spawning a bullet
+    startSpawning(tower,enemyInRange) {
+        // spawning a new bullet
+        let bullet = new Bullet();
+        this.bullets.push(bullet);
+        // locking a target
+        this.target = this.lockTarget(enemyInRange);
+        // shooting
+        bullet.initializeBullet(tower);
+        bullet.bulletShooting(tower,this.target);
+    }
+
+    lockTarget(enemyInRange) {
+        // get all enemies' waypoints
+        let allWayPoints = [];
+        enemyInRange.forEach(enemy => {
+            allWayPoints.push(enemy.wayPointIndex);
+        });
+
+        // locked the enemy who has the greatest wayPoint index
+        let indexOfMaxWaypoint = indexOfMax(allWayPoints);
+        return enemyInRange[indexOfMaxWaypoint];
     }
 }

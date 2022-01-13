@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-15 23:49:00
  * @LastEditors: Ke Ren
- * @LastEditTime: 2021-12-29 01:09:31
+ * @LastEditTime: 2022-01-09 00:03:56
  * @FilePath: /tower-defense-game/js/method.js
  */
 
@@ -52,4 +52,15 @@ class Vector {
         ...components.map((component, index) => this.components[index] - component)
         )
     }
+}
+
+// find the index of greatest value in an array
+function indexOfMax(arr) {
+    let i = arr.indexOf(Math.max(...arr));
+    return i;
+}
+
+// Calculate linear interpolation between two points
+function pSub(startPoint,targetPoint) {
+    return [targetPoint[0]-startPoint[0],targetPoint[1]-startPoint[1]];
 }
