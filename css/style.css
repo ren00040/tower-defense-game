@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-17 00:05:51
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-05 22:05:56
+ * @LastEditTime: 2022-01-15 00:38:03
  * @FilePath: /tower-defense-game/css/style.css
  */
 
@@ -88,4 +88,9 @@
  .scorePanel > div {
     display: flex;
     align-items: center;
+ }
+
+ .log {
+     position: absolute;
+     top: 620px;
  }
