@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-05 23:58:21
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-09 23:27:59
+ * @LastEditTime: 2022-01-17 12:11:00
  * @FilePath: /tower-defense-game/js/bullet.js
  */
 
@@ -10,13 +10,13 @@ class Bullet {
         this.position = [];
         this.speed = 1;
         this.img = new Image();
+        this.target = new Eenmy();
     }
 
     initializeBullet(tower) {
         // style the new bullet
         this.name = tower.name+"Bullet";
         this.position = tower.position;
-        console.log("bullet position: "+ this.position);
         switch (tower.name) {
             case "archer":
                 this.img.src = "assets/images/bullets/b-archer.png";
@@ -38,53 +38,6 @@ class Bullet {
         }
     }
 
-    // let the bullet fly in a while
-    bulletShooting(tower,target) {
-        this.drawBullet(tower);
-        this.bulletMoving(target);
-        console.log("shooting at enemy"+target.id);
-    }
-
-    drawBullet(tower) {
-        let dx = pxToNum(tower.position[0]);
-        let dy = pxToNum(tower.position[1]);
-        towerGame.bulletCTX.drawImage(this.img,dx,dy);
-    }
-
-    bulletMoving(target) {
-        // linear interpolation between enemy and bullet
-
-        let delta = pSub(this.position,target.position);
-
-        // get the distance between enemy and bullet
-        let distance = getDistance(this.position,target.position);
-
-        // calculate the next position fo the bullet
-        let offsetX = this.position[0] + this.speed * delta[0] / distance;
-        let offsetY = this.position[1] + this.speed * delta[1] / distance;
-        this.position = [offsetX,offsetY];
-    }
-}
-
-class BulletSpawner{
-    constructor() {
-        this.bullets = [];
-        this.rate = 1000; // the shooting interval (millisecond)
-        this.target;
-        this.name;
-    }
-
-    startSpawning(tower,enemyInRange) {
-        // spawning a new bullet
-        let bullet = new Bullet();
-        this.bullets.push(bullet);
-        // locking a target
-        this.target = this.lockTarget(enemyInRange);
-        // shooting
-        bullet.initializeBullet(tower);
-        bullet.bulletShooting(tower,this.target);
-    }
-
     lockTarget(enemyInRange) {
         // get all enemies' waypoints
         let allWayPoints = [];
@@ -94,6 +47,23 @@ class BulletSpawner{
 
         // locked the enemy who has the greatest wayPoint index
         let indexOfMaxWaypoint = indexOfMax(allWayPoints);
-        return enemyInRange[indexOfMaxWaypoint];
+        this.target = enemyInRange[indexOfMaxWaypoint];        
+    }
+
+    bulletMoving() {
+        // linear interpolation between enemy and bullet
+        let pos = [pxToNum(this.position[0]),pxToNum(this.position[1])];
+
+        let delta = pSub(pos,this.target.position);
+        
+        // get the distance between enemy and bullet
+        let distance = getDistance(pos,this.target.position);
+        
+        // calculate the next position fo the bullet
+        let offsetX = pos[0] + this.speed * delta[0]*5 / distance;
+        let offsetY = pos[1] + this.speed * delta[1]*5 / distance;
+
+        this.position = [offsetX+"px",offsetY+"px"];
     }
 }
+

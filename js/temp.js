@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-09 23:23:01
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-09 23:24:24
+ * @LastEditTime: 2022-01-15 23:30:59
  * @FilePath: /tower-defense-game/js/temp.js
  */
 
@@ -23,4 +23,38 @@ function _detectEnemy(tower) {
             bulletSpawner.startSpawning(tower,enemyInRange);
         }
     });
+}
+
+
+
+class BulletSpawner{
+    constructor() {
+        this.bullets = [];
+        this.rate = 1000; // the shooting interval (millisecond)
+        this.target;
+        this.name;
+    }
+
+    startSpawning(tower,enemyInRange) {
+        // spawning a new bullet
+        let bullet = new Bullet();
+        this.bullets.push(bullet);
+        // locking a target
+        this.target = this.lockTarget(enemyInRange);
+        // shooting
+        bullet.initializeBullet(tower);
+        bullet.bulletShooting(tower,this.target);
+    }
+
+    lockTarget(enemyInRange) {
+        // get all enemies' waypoints
+        let allWayPoints = [];
+        enemyInRange.forEach(enemy => {
+            allWayPoints.push(enemy.wayPointIndex);
+        });
+
+        // locked the enemy who has the greatest wayPoint index
+        let indexOfMaxWaypoint = indexOfMax(allWayPoints);
+        return enemyInRange[indexOfMaxWaypoint];
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-13 10:56:56
+ * @LastEditTime: 2022-01-17 18:19:26
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -10,7 +10,7 @@
  */
 
 // define all global variables
-var towerGame; // the global game object
+let towerGame; // the global game object
 var gameUI; // the game UI
 var settlePoint;
 const frame_rate = 25; // game frame rate: refresh once per 40 milliseconds: 1000/25=40
@@ -213,7 +213,7 @@ class Game {
         this.endPoint;
         this.enemies = []; 
         this.towers = [];
-        this.bullets = []
+        this.bulletsOfGame = []
         this.gold = 0;
         this.life = 0;
         this.maxLife;
@@ -346,34 +346,50 @@ class Game {
 
     updateTowers() {
         alltowers.forEach(tower => {
-            this.detectEnemy(tower);
+            this.findTarget(tower);
         });
     }
 
-    detectEnemy(tower) {
-        let enemyInRange = [];
-        towerGame.enemies.forEach(enemy => {
+    findTarget(tower) { //from updateTowers()
+        let enemyInRange = []; // store enemies which are in the tower attack range
+        
+        this.enemies.forEach(enemy => {
             let towerPos = [pxToNum(tower.position[0]), pxToNum(tower.position[1])];
             let enemyPos = [enemy.position[0], enemy.position[1]];
 
             let distance = getDistance(towerPos,enemyPos);
-            
-            console.log("not find an enemy");
 
+            // find an enemy
             if(distance <= tower.range) {
                 enemyInRange.push(enemy);
-                console.log("find an enemy");
-                tower.startSpawning(tower,enemyInRange);
+
+                // the tower spawns bullets
+                tower.spawnBullets(enemyInRange);
             }
         });
     }
 
     renderBullets() {
-        
+        // clear canvas
+        this.bulletCTX.clearRect(0,0,canvasWidth,canvasHight);
+        // rendering all bullets
+        this.bulletsOfGame.forEach(bullet => {
+            bullet.bulletMoving();
+            let dx = pxToNum(bullet.position[0]);
+            let dy = pxToNum(bullet.position[1]);
+            this.bulletCTX.drawImage(bullet.img, dx, dy);
+
+            // if the bullet close to the target, remove it
+            let bPos = [dx, dy];
+            let bulletToTargetDistance = getDistance(bPos,bullet.target.position)
+            if (bulletToTargetDistance < 1) {
+                const index = this.bulletsOfGame.indexOf(bullet);
+                this.bulletsOfGame.splice(index,1);
+            }
+        });
     }
 
     updateUI() {
-        let uiWarp = document.querySelector("#ui-wrap");
         // update wave
         let wavesNum = scorePanel.querySelector(".waveNum");
         wavesNum.innerHTML = `

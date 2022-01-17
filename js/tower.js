@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-02 00:33:05
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-09 23:28:48
+ * @LastEditTime: 2022-01-17 12:07:09
  * @FilePath: /tower-defense-game/js/tower.js
  */
 
@@ -19,9 +19,10 @@ class Tower {
         this.img = new Image();
         this.position;
         this.isShoot = false;
-        this.bullets = [];
-        this.rate;
-        this.target;
+        this.rate = 1;
+        this.target = null;
+        this.filled = true;
+        this.fireInterval;
     }
 
     drawTower(allButtons,settlePoint) {
@@ -87,22 +88,57 @@ class Tower {
         ctx.stroke();
     }
 
+    spawnBullets(enemyInRange) {
+        //  Spawns a new bullet every once in a while
+
+        if(this.filled) {
+            this.filled = false;
+            // create a new bullets
+            const newBullet = new Bullet();
+            towerGame.bulletsOfGame.push(newBullet);
+            newBullet.initializeBullet(this);
+
+            // lock a target
+            newBullet.lockTarget(enemyInRange);
+        } else{
+            console.log("waiting..."+ this.fireInterval);
+            this.fireInterval--;
+            if (this.fireInterval <= 0) {
+                this.filled = true;
+                this.fireInterval = this.rate * frame_rate;
+            }
+        }
+    }
+
+
     // set all tower's parameters
     initailizeTower() {
         switch (this.name) {
             case "archer":
                 this.cost = 50;
                 this.range = 120;
+                this.minDamage = 15;
+                this.maxDamage = 18;
+                this.rate = 1;
+                this.fireInterval = this.rate * frame_rate;
                 break;
         
             case "cannon":
                 this.cost = 80;
                 this.range = 100;
+                this.minDamage = 30;
+                this.maxDamage = 35;
+                this.rate = 1.5;
+                this.fireInterval = this.rate * frame_rate;
                 break;
 
             case "ice":
                 this.cost = 75;
                 this.range = 80;
+                this.minDamage = 8;
+                this.maxDamage = 10;
+                this.rate = 1;
+                this.fireInterval = this.rate * frame_rate;
                 break;
 
             default:
@@ -110,27 +146,4 @@ class Tower {
         }
     }
 
-    // spawning a bullet
-    startSpawning(tower,enemyInRange) {
-        // spawning a new bullet
-        let bullet = new Bullet();
-        this.bullets.push(bullet);
-        // locking a target
-        this.target = this.lockTarget(enemyInRange);
-        // shooting
-        bullet.initializeBullet(tower);
-        bullet.bulletShooting(tower,this.target);
-    }
-
-    lockTarget(enemyInRange) {
-        // get all enemies' waypoints
-        let allWayPoints = [];
-        enemyInRange.forEach(enemy => {
-            allWayPoints.push(enemy.wayPointIndex);
-        });
-
-        // locked the enemy who has the greatest wayPoint index
-        let indexOfMaxWaypoint = indexOfMax(allWayPoints);
-        return enemyInRange[indexOfMaxWaypoint];
-    }
 }
