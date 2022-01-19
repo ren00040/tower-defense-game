@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-17 18:19:26
+ * @LastEditTime: 2022-01-19 00:25:21
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -320,7 +320,7 @@ class Game {
 
     // rendering enemy's healpoints
     drawEnemyHealpoint(enemy) {
-        let red = (100-enemy.healPoint)*255/100;
+        let red = 255 - (enemy.healPoint/100)*255;
         let green = (enemy.healPoint/100)*255;
         // set a gradient color; green means healthy and red means in danger
         let color = `rgb(${red},${green},0)`;
@@ -382,11 +382,17 @@ class Game {
             // if the bullet close to the target, remove it
             let bPos = [dx, dy];
             let bulletToTargetDistance = getDistance(bPos,bullet.target.position)
-            if (bulletToTargetDistance < 1) {
+            if (bulletToTargetDistance < 2) {
                 const index = this.bulletsOfGame.indexOf(bullet);
                 this.bulletsOfGame.splice(index,1);
+                // invoke decreaseHp() to decrease the enemy's HP
+                bullet.target.decreaseHp(bullet);
             }
         });
+    }
+
+    increaseGold(enemy) {
+        this.gold += enemy.award;
     }
 
     updateUI() {

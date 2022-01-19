@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-05 22:04:52
+ * @LastEditTime: 2022-01-19 00:26:30
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -11,7 +11,7 @@ class Eenmy {
         this.name;
         this.speed;
         this.image = new Image();
-        this.healPoint;
+        this.healPoint = 0;
         this.position;
         this.root;
         this.wayPointIndex = 0;
@@ -23,6 +23,25 @@ class Eenmy {
         this.step = 0;
         this.angle;
         this.size;
+        this.award = 0;
+    }
+
+    decreaseHp(bullet) {
+        console.log(bullet);
+        let minDamage = bullet.minDamage;
+        let maxDamage = bullet.maxDamage;
+        let hitPoint = randomIntFromInterval(minDamage, maxDamage);
+        this.healPoint -= hitPoint;
+        if(this.healPoint<=0) {
+            this.enemyDead();
+            bullet.remove();
+        }
+    }
+
+    enemyDead() {
+        let index = towerGame.enemies.indexOf(this);
+        towerGame.enemies.splice(index,1);
+        towerGame.increaseGold(this);
     }
 }
 
@@ -74,6 +93,7 @@ function spawnEnemy(enemyID,wave) {
     enemy.image.src = "assets/enemies/fox.png";
     enemy.size = 32;
     enemy.healPoint = 100;
+    enemy.award = 5;
     enemy.speed = 3; // set enemy's speed;
 
     // Put the new enemy into towerGame.enemies

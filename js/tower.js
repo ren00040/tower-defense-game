@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-02 00:33:05
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-17 12:07:09
+ * @LastEditTime: 2022-01-19 00:19:23
  * @FilePath: /tower-defense-game/js/tower.js
  */
 
@@ -109,7 +109,6 @@ class Tower {
             }
         }
     }
-
 
     // set all tower's parameters
     initailizeTower() {

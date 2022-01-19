@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-05 23:58:21
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-17 12:11:00
+ * @LastEditTime: 2022-01-19 00:27:42
  * @FilePath: /tower-defense-game/js/bullet.js
  */
 
@@ -11,12 +11,17 @@ class Bullet {
         this.speed = 1;
         this.img = new Image();
         this.target = new Eenmy();
+        this.minDamage = 0 ;
+        this.maxDamage = 0;
     }
 
     initializeBullet(tower) {
         // style the new bullet
         this.name = tower.name+"Bullet";
         this.position = tower.position;
+        this.maxDamage = tower.maxDamage;
+        this.minDamage = tower.minDamage;
+
         switch (tower.name) {
             case "archer":
                 this.img.src = "assets/images/bullets/b-archer.png";
@@ -64,6 +69,11 @@ class Bullet {
         let offsetY = pos[1] + this.speed * delta[1]*5 / distance;
 
         this.position = [offsetX+"px",offsetY+"px"];
+    }
+
+    remove() {
+        let index = towerGame.bulletsOfGame.indexOf(this);
+        towerGame.bulletsOfGame.splice(index,1);
     }
 }
 

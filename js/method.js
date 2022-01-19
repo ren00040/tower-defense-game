@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-15 23:49:00
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-09 00:03:56
+ * @LastEditTime: 2022-01-19 00:01:23
  * @FilePath: /tower-defense-game/js/method.js
  */
 
@@ -16,8 +16,6 @@ const toRadians = degrees => (degrees * Math.PI) / 180
 
 // get distance between two points
 function getDistance(start,end) {
-    // let x = end[0]-start[0];
-    // let y = end[1]-start[1];
     let x = Math.abs(end[0]-start[0]);
     let y = Math.abs(end[1]-start[1]);
     return Math.sqrt(x*x+y*y);
@@ -64,3 +62,8 @@ function indexOfMax(arr) {
 function pSub(startPoint,targetPoint) {
     return [targetPoint[0]-startPoint[0],targetPoint[1]-startPoint[1]];
 }
+
+
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
