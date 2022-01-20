@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-15 23:49:00
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-19 00:01:23
+ * @LastEditTime: 2022-01-19 13:07:48
  * @FilePath: /tower-defense-game/js/method.js
  */
 
@@ -54,8 +54,7 @@ class Vector {
 
 // find the index of greatest value in an array
 function indexOfMax(arr) {
-    let i = arr.indexOf(Math.max(...arr));
-    return i;
+    return arr.indexOf(Math.max(...arr));
 }
 
 // Calculate linear interpolation between two points

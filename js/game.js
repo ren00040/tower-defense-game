@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-19 00:25:21
+ * @LastEditTime: 2022-01-20 01:10:39
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -374,15 +374,27 @@ class Game {
         this.bulletCTX.clearRect(0,0,canvasWidth,canvasHight);
         // rendering all bullets
         this.bulletsOfGame.forEach(bullet => {
+            console.log("target: "+bullet.target.id);
+            if(!bullet.target) {
+                bullet.remove();
+                console.log("remove");
+            }
             bullet.bulletMoving();
             let dx = pxToNum(bullet.position[0]);
             let dy = pxToNum(bullet.position[1]);
+
+            // save ctx
+            this.bulletCTX.save();
+
             this.bulletCTX.drawImage(bullet.img, dx, dy);
 
+            // restore ctx
+            this.bulletCTX.restore();
+            
             // if the bullet close to the target, remove it
             let bPos = [dx, dy];
             let bulletToTargetDistance = getDistance(bPos,bullet.target.position)
-            if (bulletToTargetDistance < 2) {
+            if (bulletToTargetDistance < 3) {
                 const index = this.bulletsOfGame.indexOf(bullet);
                 this.bulletsOfGame.splice(index,1);
                 // invoke decreaseHp() to decrease the enemy's HP

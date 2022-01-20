@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-05 23:58:21
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-19 00:27:42
+ * @LastEditTime: 2022-01-20 01:05:41
  * @FilePath: /tower-defense-game/js/bullet.js
  */
 
@@ -56,6 +56,9 @@ class Bullet {
     }
 
     bulletMoving() {
+        if(this.target == null) {
+            this.remove();
+        }
         // linear interpolation between enemy and bullet
         let pos = [pxToNum(this.position[0]),pxToNum(this.position[1])];
 
@@ -69,6 +72,12 @@ class Bullet {
         let offsetY = pos[1] + this.speed * delta[1]*5 / distance;
 
         this.position = [offsetX+"px",offsetY+"px"];
+        this.bulletRotate();
+    }
+
+    bulletRotate() {
+        let bulletPos = [pxToNum(this.position[0]), pxToNum(this.position[1])];
+        return angleBetweenPoints(bulletPos,this.target.position);
     }
 
     remove() {

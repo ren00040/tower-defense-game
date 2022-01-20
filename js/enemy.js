@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-19 00:26:30
+ * @LastEditTime: 2022-01-20 01:38:31
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -27,7 +27,6 @@ class Eenmy {
     }
 
     decreaseHp(bullet) {
-        console.log(bullet);
         let minDamage = bullet.minDamage;
         let maxDamage = bullet.maxDamage;
         let hitPoint = randomIntFromInterval(minDamage, maxDamage);
@@ -39,8 +38,15 @@ class Eenmy {
     }
 
     enemyDead() {
-        let index = towerGame.enemies.indexOf(this);
-        towerGame.enemies.splice(index,1);
+        let target = this;
+        // find and remove the target
+        towerGame.enemies.forEach(function(item, index, arr) {
+            if(item.id === target.id) {
+                arr.splice(index,1);
+            }
+        });
+        
+        // get the award
         towerGame.increaseGold(this);
     }
 }
@@ -74,7 +80,6 @@ function startSpawning(spawner,wave) {
     for (let enemyID = 0; enemyID < wave[1]; enemyID++) {
         setTimeout(spawnEnemy,spawner.spawnInterval*(enemyID+1),enemyID,wave);
     }
-    console.log(towerGame.enemies);
 }
 
 // spawn an enemy
@@ -94,7 +99,7 @@ function spawnEnemy(enemyID,wave) {
     enemy.size = 32;
     enemy.healPoint = 100;
     enemy.award = 5;
-    enemy.speed = 3; // set enemy's speed;
+    enemy.speed = 2; // set enemy's speed;
 
     // Put the new enemy into towerGame.enemies
     towerGame.enemies.push(enemy);
