@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-20 01:10:39
+ * @LastEditTime: 2022-01-21 00:56:39
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -374,7 +374,6 @@ class Game {
         this.bulletCTX.clearRect(0,0,canvasWidth,canvasHight);
         // rendering all bullets
         this.bulletsOfGame.forEach(bullet => {
-            console.log("target: "+bullet.target.id);
             if(!bullet.target) {
                 bullet.remove();
                 console.log("remove");
@@ -382,17 +381,26 @@ class Game {
             bullet.bulletMoving();
             let dx = pxToNum(bullet.position[0]);
             let dy = pxToNum(bullet.position[1]);
+            let bPos = [dx, dy];
+            let aimAngle = angleBetweenPoints(bPos,bullet.target.position)*pi/180;
+            console.log(aimAngle,bPos);
 
             // save ctx
             this.bulletCTX.save();
 
+            this.bulletCTX.translate(dx,dy);
+            this.bulletCTX.rotate(aimAngle);
+            this.bulletCTX.translate(-dx,-dy);
+
             this.bulletCTX.drawImage(bullet.img, dx, dy);
 
+            // turn back CTX
+            // this.bulletCTX.rotate(-aimAngle);
+            
             // restore ctx
             this.bulletCTX.restore();
             
             // if the bullet close to the target, remove it
-            let bPos = [dx, dy];
             let bulletToTargetDistance = getDistance(bPos,bullet.target.position)
             if (bulletToTargetDistance < 3) {
                 const index = this.bulletsOfGame.indexOf(bullet);
