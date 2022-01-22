@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-05 23:58:21
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-20 01:05:41
+ * @LastEditTime: 2022-01-22 10:47:25
  * @FilePath: /tower-defense-game/js/bullet.js
  */
 

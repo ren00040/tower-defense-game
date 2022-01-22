@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-02 00:33:05
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-21 22:41:35
+ * @LastEditTime: 2022-01-22 10:38:19
  * @FilePath: /tower-defense-game/js/tower.js
  */
 
@@ -115,8 +115,8 @@ class Tower {
             case "archer":
                 this.cost = 50;
                 this.range = 120;
-                this.minDamage = 15;
-                this.maxDamage = 180;
+                this.minDamage = 30;
+                this.maxDamage = 36;
                 this.rate = 1;
                 this.fireInterval = this.rate * frame_rate;
                 break;
@@ -124,8 +124,8 @@ class Tower {
             case "cannon":
                 this.cost = 80;
                 this.range = 100;
-                this.minDamage = 30;
-                this.maxDamage = 35;
+                this.minDamage = 45;
+                this.maxDamage = 50;
                 this.rate = 1.5;
                 this.fireInterval = this.rate * frame_rate;
                 break;
@@ -133,8 +133,8 @@ class Tower {
             case "ice":
                 this.cost = 75;
                 this.range = 80;
-                this.minDamage = 8;
-                this.maxDamage = 10;
+                this.minDamage = 18;
+                this.maxDamage = 22;
                 this.rate = 1;
                 this.fireInterval = this.rate * frame_rate;
                 break;

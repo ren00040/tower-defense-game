@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-17 00:05:51
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-22 00:17:35
+ * @LastEditTime: 2022-01-22 10:12:11
  * @FilePath: /tower-defense-game/css/style.css
  */
 
@@ -91,14 +91,17 @@
  }
 
 
- #gameWin {
+ #gameWin,
+ #gameOver {
     position: absolute;
     width: 700px;
     height: 600px;
     background-color: rgba(255, 255, 255, 0.7);
+
  }
 
- .winImg
+ .winImg,
+ .gameOverImg
  {
     position: absolute;
     left: 50%;

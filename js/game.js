@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-22 00:19:58
+ * @LastEditTime: 2022-01-22 10:44:41
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -198,11 +198,11 @@ function drawGameMenu() {
 // Game Exit
 function exit() {
     console.log("TODO: game exit")
+    close();
 }
 
 // Show Credits Page
 function credits() {
-    towerGame.youWin();
     console.log("TODO: Credits");
 }
 
@@ -439,6 +439,51 @@ class Game {
     gameOver() {
         console.log("game over");
         this.gameover = true;
+
+        const gameOver = document.createElement("div");
+        gameOver.setAttribute("id", "gameOver");
+        gameOver.setAttribute("class", "gameOver");
+        gameOver.style.background = "url('assets/images/ui/gameOverBackground.png')";
+        gameOver.style.backgroundSize = "cover";
+
+        const gameOverImg = new Image();
+        gameOverImg.src = "assets/images/ui/gameOver.png";
+        gameOverImg.setAttribute("class", "gameOverImg");
+
+        const btnWrap = document.createElement("div");
+        btnWrap.setAttribute("class","btnWrap");
+
+        const restartBtn = document.createElement("div");
+        restartBtn.classList.add("winBtn","restartBtn");
+        restartBtn.style.background = "url('assets/images/ui/restart1.png')";
+        
+        const exitBtn = document.createElement("div");
+        exitBtn.classList.add("winBtn","exitBtn")
+        exitBtn.style.background = "url('assets/images/ui/exit1.png')";
+
+        btnWrap.append(restartBtn,exitBtn);      
+        gameOver.append(gameOverImg,btnWrap);
+        gameWrap.append(gameOver);
+
+        restartBtn.addEventListener("click", function() {
+            location.reload();
+        });
+        restartBtn.addEventListener("mouseover", function() {
+            restartBtn.style.background = "url('assets/images/ui/restart2.png')";
+        });
+        restartBtn.addEventListener("mouseout", function() {
+            restartBtn.style.background = "url('assets/images/ui/restart1.png')";
+        });
+        exitBtn.addEventListener("click", function() {
+            exit();
+        });
+        exitBtn.addEventListener("mouseover", function() {
+            exitBtn.style.background = "url('assets/images/ui/exit2.png')";
+        });
+        exitBtn.addEventListener("mouseout", function() {
+            exitBtn.style.background = "url('assets/images/ui/exit1.png')";
+        });
+
     }
 
     youWin() {
@@ -577,10 +622,12 @@ function preShake() {
   }
   var easingCoef = dt / shakeDuration;
   var easing = Math.pow(easingCoef-1,3) +1;
-  towerGame.mapCTX.save();  
+  towerGame.mapCTX.save();
+  towerGame.towerCTX.save();
   var dx = easing*(Math.cos(dt*0.1 ) + Math.cos( dt *0.3115))*15;
   var dy = easing*(Math.sin(dt*0.05) + Math.sin(dt*0.057113))*15;
   towerGame.mapCTX.translate(dx, dy);  
+  towerGame.towerCTX.translate(dx,dy);
 }
 
 function postShake() {

@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-21 23:41:02
+ * @LastEditTime: 2022-01-22 10:37:29
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
