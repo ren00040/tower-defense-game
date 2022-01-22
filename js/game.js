@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-21 00:56:39
+ * @LastEditTime: 2022-01-22 00:19:58
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -14,7 +14,7 @@ let towerGame; // the global game object
 var gameUI; // the game UI
 var settlePoint;
 const frame_rate = 25; // game frame rate: refresh once per 40 milliseconds: 1000/25=40
-var gameWrap; // contains the game's window
+const gameWrap = document.createElement("div"); // contains the game's window
 const canvasWidth = 700; // Initialize game canvas width
 const canvasHight = 600; // Initialize game canvas hight
 var updateTimeoutID;
@@ -27,7 +27,6 @@ function gameSetup() {
     gameUI = new GameUI();
     settlePoint = new SettlePoint();
     //setup game main container
-    gameWrap = document.createElement("div");
     gameWrap.setAttribute("id","game-wrap");
     gameWrap.classList.add("game-wrap")
     let marginleft = -canvasWidth/2;
@@ -141,20 +140,20 @@ function drawGameMenu() {
 
     copyright();
 
-    let gameMenu = document.querySelector("#game-menu");
+    const gameMenu = document.querySelector("#game-menu");
     
     // create 3 buttons: start, credits and exit
-    let startButton = document.createElement("div");
+    const startButton = document.createElement("div");
     startButton.setAttribute("id","start-button");
     startButton.setAttribute("name","start"); // 'name' attribute is used for loading background imamge
     startButton.classList.add("menu-button","start-button");
 
-    let creditsButton = document.createElement("div");
+    const creditsButton = document.createElement("div");
     creditsButton.setAttribute("id","credits-button");
     creditsButton.setAttribute("name","credits"); // 'name' attribute is used for loading background imamge
     creditsButton.classList.add("menu-button","credits-button");
 
-    let exitButton = document.createElement("div");
+    const exitButton = document.createElement("div");
     exitButton.setAttribute("id","exit-button");
     exitButton.setAttribute("name","exit"); // 'name' attribute is used for loading background imamge
     exitButton.classList.add("menu-button","exit-button");
@@ -203,6 +202,7 @@ function exit() {
 
 // Show Credits Page
 function credits() {
+    towerGame.youWin();
     console.log("TODO: Credits");
 }
 
@@ -224,6 +224,7 @@ class Game {
         this.mapSprite = new Image(); //the game background image
         this.gameover = false;
         this.gameWave = 0;
+        this.win = false;
     }
 
     update() { //from gameUpdate()
@@ -333,10 +334,11 @@ class Game {
     destoryEnemy() {
         this.enemies.shift();
         this.life --;
-        if(this.life <= 0) this.gameOver();
-        console.log("destory an enemy");
-
-        if(this.enemies.length == 0) towerGame.newWave();
+        if(this.life <= 0) {
+            this.gameOver();
+        }else {
+            if(this.enemies.length <= 0) towerGame.newWave();   
+        }
     }
 
     newWave() {
@@ -376,14 +378,12 @@ class Game {
         this.bulletsOfGame.forEach(bullet => {
             if(!bullet.target) {
                 bullet.remove();
-                console.log("remove");
             }
             bullet.bulletMoving();
             let dx = pxToNum(bullet.position[0]);
             let dy = pxToNum(bullet.position[1]);
             let bPos = [dx, dy];
             let aimAngle = angleBetweenPoints(bPos,bullet.target.position)*pi/180;
-            console.log(aimAngle,bPos);
 
             // save ctx
             this.bulletCTX.save();
@@ -440,13 +440,58 @@ class Game {
         console.log("game over");
         this.gameover = true;
     }
+
+    youWin() {
+        this.gameWin = true;
+        
+        const gameWin = document.createElement("div");
+        gameWin.setAttribute("id", "gameWin");
+        gameWin.setAttribute("class", "gameWin");
+
+        const winImg = new Image();
+        winImg.src = "assets/images/ui/win.png";
+        winImg.setAttribute("class", "winImg");
+
+        const btnWrap = document.createElement("div");
+        btnWrap.setAttribute("class","btnWrap");
+
+        const restartBtn = document.createElement("div");
+        restartBtn.classList.add("winBtn","restartBtn");
+        restartBtn.style.background = "url('assets/images/ui/restart1.png')";
+        
+        const exitBtn = document.createElement("div");
+        exitBtn.classList.add("winBtn","exitBtn")
+        exitBtn.style.background = "url('assets/images/ui/exit1.png')";
+
+        btnWrap.append(restartBtn,exitBtn);      
+        gameWin.append(winImg,btnWrap);
+        gameWrap.append(gameWin);
+
+        restartBtn.addEventListener("click", function() {
+            location.reload();
+        });
+        restartBtn.addEventListener("mouseover", function() {
+            restartBtn.style.background = "url('assets/images/ui/restart2.png')";
+        });
+        restartBtn.addEventListener("mouseout", function() {
+            restartBtn.style.background = "url('assets/images/ui/restart1.png')";
+        });
+        exitBtn.addEventListener("click", function() {
+            exit();
+        });
+        exitBtn.addEventListener("mouseover", function() {
+            exitBtn.style.background = "url('assets/images/ui/exit2.png')";
+        });
+        exitBtn.addEventListener("mouseout", function() {
+            exitBtn.style.background = "url('assets/images/ui/exit1.png')";
+        });
+    }
 }
 
 // Game start
 function loadingLevel() { 
     // from drawGameMenu()
     console.clear();
-    console.log("Game Start");
     document.querySelector("#game-menu").remove();
     loadingBar();
     loadingScene();

@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-02 00:33:05
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-19 11:55:30
+ * @LastEditTime: 2022-01-21 22:41:35
  * @FilePath: /tower-defense-game/js/tower.js
  */
 
@@ -116,7 +116,7 @@ class Tower {
                 this.cost = 50;
                 this.range = 120;
                 this.minDamage = 15;
-                this.maxDamage = 18;
+                this.maxDamage = 180;
                 this.rate = 1;
                 this.fireInterval = this.rate * frame_rate;
                 break;

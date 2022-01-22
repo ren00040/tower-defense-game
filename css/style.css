@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-17 00:05:51
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-15 00:38:03
+ * @LastEditTime: 2022-01-22 00:17:35
  * @FilePath: /tower-defense-game/css/style.css
  */
 
@@ -88,6 +88,38 @@
  .scorePanel > div {
     display: flex;
     align-items: center;
+ }
+
+
+ #gameWin {
+    position: absolute;
+    width: 700px;
+    height: 600px;
+    background-color: rgba(255, 255, 255, 0.7);
+ }
+
+ .winImg
+ {
+    position: absolute;
+    left: 50%;
+    top:20%;
+    margin-left: -90px;
+    width: 180px;
+    height: 55px;
+ }
+
+ .btnWrap {
+    position: absolute;
+    left: 50%;
+    top:30%;
+    margin-left: -90px;
+ }
+
+ .winBtn {
+    margin-top: 30px;
+    width: 180px;
+    height: 55px;
+    background-size: cover;
  }
 
  .log {

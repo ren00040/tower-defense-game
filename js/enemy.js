@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-20 01:38:31
+ * @LastEditTime: 2022-01-21 23:41:02
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -32,8 +32,8 @@ class Eenmy {
         let hitPoint = randomIntFromInterval(minDamage, maxDamage);
         this.healPoint -= hitPoint;
         if(this.healPoint<=0) {
-            this.enemyDead();
             bullet.remove();
+            this.enemyDead();
         }
     }
 
@@ -48,6 +48,19 @@ class Eenmy {
         
         // get the award
         towerGame.increaseGold(this);
+
+        let level = towerGame.level;
+        let currentWave = towerGame.gameWave;
+        let waveAmount = levels[level].enemyWave.length - 1;
+
+        console.log(currentWave,waveAmount);
+        if(towerGame.enemies.length <= 0) {
+            if (currentWave < waveAmount) {
+                towerGame.newWave();
+            }else { 
+                towerGame.youWin();
+            }
+        }
     }
 }
 
