@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-20 23:24:20
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-22 10:37:29
+ * @LastEditTime: 2022-01-23 00:55:18
  * @FilePath: /tower-defense-game/js/enemy.js
  */
 
@@ -53,7 +53,6 @@ class Eenmy {
         let currentWave = towerGame.gameWave;
         let waveAmount = levels[level].enemyWave.length - 1;
 
-        console.log(currentWave,waveAmount);
         if(towerGame.enemies.length <= 0) {
             if (currentWave < waveAmount) {
                 towerGame.newWave();

@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-22 10:44:41
+ * @LastEditTime: 2022-01-23 00:58:43
  * @FilePath: /tower-defense-game/js/game.js
  */
 
@@ -334,10 +334,17 @@ class Game {
     destoryEnemy() {
         this.enemies.shift();
         this.life --;
+        
+        // TODO: Game Win
+        if (this.enemies.length <= 0 && towerGame.gameWave == levels[currentLevel].enemyWave.length-1) {
+            console.log("win");
+            this.youWin();
+        }
+
         if(this.life <= 0) {
             this.gameOver();
         }else {
-            if(this.enemies.length <= 0) towerGame.newWave();   
+            if(this.enemies.length <= 0 && towerGame.gameWave < levels[currentLevel].enemyWave.length-1) towerGame.newWave();   
         }
     }
 
