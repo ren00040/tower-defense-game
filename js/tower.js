@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-02 00:33:05
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-22 10:38:19
+ * @LastEditTime: 2022-01-26 23:44:21
  * @FilePath: /tower-defense-game/js/tower.js
  */
 
@@ -23,6 +23,7 @@ class Tower {
         this.target = null;
         this.filled = true;
         this.fireInterval;
+        this.sound = new Audio();
     }
 
     drawTower(allButtons,settlePoint) {
@@ -95,6 +96,7 @@ class Tower {
             this.filled = false;
             // create a new bullets
             const newBullet = new Bullet();
+            this.sound.play();
             towerGame.bulletsOfGame.push(newBullet);
             newBullet.initializeBullet(this);
 
@@ -119,6 +121,7 @@ class Tower {
                 this.maxDamage = 36;
                 this.rate = 1;
                 this.fireInterval = this.rate * frame_rate;
+                this.sound.src = "assets/sounds/archerShooting.ogg"
                 break;
         
             case "cannon":

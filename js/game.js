@@ -1,210 +1,13 @@
 /*
  * @Date: 2021-12-16 00:10:31
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-23 00:58:43
+ * @LastEditTime: 2022-01-27 00:12:37
  * @FilePath: /tower-defense-game/js/game.js
  */
 
 /*
  * game.js contains the main logic code
  */
-
-// define all global variables
-let towerGame; // the global game object
-var gameUI; // the game UI
-var settlePoint;
-const frame_rate = 25; // game frame rate: refresh once per 40 milliseconds: 1000/25=40
-const gameWrap = document.createElement("div"); // contains the game's window
-const canvasWidth = 700; // Initialize game canvas width
-const canvasHight = 600; // Initialize game canvas hight
-var updateTimeoutID;
-// TODO: add more global variables
-
-// game setup
-function gameSetup() {
-    // Creat the game object
-    towerGame = new Game();
-    gameUI = new GameUI();
-    settlePoint = new SettlePoint();
-    //setup game main container
-    gameWrap.setAttribute("id","game-wrap");
-    gameWrap.classList.add("game-wrap")
-    let marginleft = -canvasWidth/2;
-
-    document.body.append(gameWrap);
-    gameWrap.style.width = canvasWidth+"px";
-    gameWrap.style.height = canvasHight+"px";
-    
-    gameWrap.style.left = "50%";
-    gameWrap.style.marginLeft = marginleft.toString()+"px";
-
-    console.log("the game wrap is created");
-    
-    // Create a tower wrap
-    let towerWrap = document.createElement("div");
-    towerWrap.setAttribute("id","towerWrap");
-    towerWrap.setAttribute("class","towerWrap");
-    gameWrap.append(towerWrap);
-
-    // Setup game canvas
-    intializeCanvas();
-
-    // Setup game menu
-    let gameMenu = document.createElement("div");
-    gameMenu.setAttribute("id","game-menu");
-    gameMenu.setAttribute("class","game-menu");
-
-    gameMenu.style.left = "50%";
-    gameMenu.style.marginLeft = "-110px";
-
-    document.querySelector("#game-wrap").append(gameMenu);
-    console.log("the game menu object is created");
-
-    drawGameMenu(); // Draw the game menu buttons
-}
-
-function intializeCanvas() { 
-    //from gameSetup()
-    // Initialize All Game Canvas
-    /*
-    * Initialize the map canvas contains the scene
-    * Get CTX(map) and set canvas's width and height
-    */
-    const mapCanvas = document.querySelector("#mapCanvas");
-    let marginleft = -canvasWidth/2;
-    // get CTX(map)
-    towerGame.mapCTX = mapCanvas.getContext("2d") // Create a CanvasRenderingContext 2D Object
-    mapCanvas.width = canvasWidth;
-    mapCanvas.height = canvasHight;
-    mapCanvas.style.left = "50%";
-    mapCanvas.style.marginLeft = marginleft.toString()+"px";
-
-    /*
-    * Initialize the battle canvas
-    * Get CTX(battle canvas) and set canvas's width and height
-    */
-    const towerCanvas = document.querySelector("#towerCanvas");
-    // get CTX(battle canvas)
-    towerGame.towerCTX = towerCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
-    towerCanvas.width = canvasWidth;
-    towerCanvas.height = canvasHight;
-    towerCanvas.style.left = "50%";
-    towerCanvas.style.marginLeft = marginleft.toString()+"px";
-    /*
-    * Initialize the enemy canvas
-    * Get CTX(enemy canvas) and set canvas's width and height
-    */
-    const enemyCanvas = document.querySelector("#enemisCanvas");
-    // get CTX(enemy canvas)
-    towerGame.enemyCTX = enemyCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
-    enemyCanvas.width = canvasWidth;
-    enemyCanvas.height = canvasHight;
-    enemyCanvas.style.left = "50%";
-    enemyCanvas.style.marginLeft = marginleft.toString()+"px";
-
-    /*
-    * Initialize the bullets canvas
-    * Get CTX(bullets canvas) and set canvas's width and height
-    */
-    const bulletCanvas = document.querySelector("#bulletsCanvas");
-    // get CTX(enemy canvas)
-    towerGame.bulletCTX = bulletCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
-    bulletCanvas.width = canvasWidth;
-    bulletCanvas.height = canvasHight;
-    bulletCanvas.style.left = "50%";
-    bulletCanvas.style.marginLeft = marginleft.toString()+"px";
-
-    /*
-    * Initialize the copyright canvas
-    * Get CTX(copyright canvas) and set canvas's width and height
-    */
-    const copyrightCanvas = document.querySelector("#copyrightCanvas");
-    // get CTX(enemy canvas)
-    towerGame.copyrightCTX = copyrightCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
-    copyrightCanvas.width = canvasWidth;
-    copyrightCanvas.height = canvasHight;
-    copyrightCanvas.style.left = "50%";
-    copyrightCanvas.style.marginLeft = marginleft.toString()+"px";
-}
-
-// Draw the game menu
-function drawGameMenu() {
-    console.log("starting draw game menu")
-    
-    // loading background-image
-    // gameWrap.style.backgroundImage = "url('https://images.unsplash.com/photo-1513151233558-d860c5398176?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')";
-    towerGame.mapSprite.src = "https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-    towerGame.mapSprite.onload = function(){
-        towerGame.mapCTX.drawImage(towerGame.mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
-    }
-
-    copyright();
-
-    const gameMenu = document.querySelector("#game-menu");
-    
-    // create 3 buttons: start, credits and exit
-    const startButton = document.createElement("div");
-    startButton.setAttribute("id","start-button");
-    startButton.setAttribute("name","start"); // 'name' attribute is used for loading background imamge
-    startButton.classList.add("menu-button","start-button");
-
-    const creditsButton = document.createElement("div");
-    creditsButton.setAttribute("id","credits-button");
-    creditsButton.setAttribute("name","credits"); // 'name' attribute is used for loading background imamge
-    creditsButton.classList.add("menu-button","credits-button");
-
-    const exitButton = document.createElement("div");
-    exitButton.setAttribute("id","exit-button");
-    exitButton.setAttribute("name","exit"); // 'name' attribute is used for loading background imamge
-    exitButton.classList.add("menu-button","exit-button");
-
-    // rendering menu buttons
-    gameMenu.append(startButton,creditsButton,exitButton);
-
-    const menuButton = document.querySelectorAll(".menu-button"); //select all menu-buttons
-    /*
-     * use loop to set all button's backgroundImage
-     * use onmouseover & onmouseout to set the hover effects
-     */
-    menuButton.forEach(element => {
-        element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"1.png')";
-        // hover effect
-        element.onmouseover = function () {
-            element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"2.png')";
-        };
-        element.onmouseout = function () {
-            element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"1.png')";
-        };
-        // click event
-        element.addEventListener('click',function(){
-            element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"3.png')";
-            switch (element.getAttribute('name')) {
-                case "start":
-                    loadingLevel();
-                    break;
-                case "credits":
-                    credits();
-                    break;
-                case "exit":
-                    exit();
-                    break;
-                default:
-                    break;
-            }
-        });
-    });
-}
-
-// Game Exit
-function exit() {
-    console.log("TODO: game exit")
-    close();
-}
-
-// Show Credits Page
-function credits() {
-    console.log("TODO: Credits");
-}
 
 // Game object from setup()
 class Game {
@@ -225,6 +28,7 @@ class Game {
         this.gameover = false;
         this.gameWave = 0;
         this.win = false;
+        this.battleMusic = new Audio("assets/sounds/battleMusic.ogg")
     }
 
     update() { //from gameUpdate()
@@ -446,7 +250,7 @@ class Game {
     gameOver() {
         console.log("game over");
         this.gameover = true;
-
+        this.battleMusic.pause()
         const gameOver = document.createElement("div");
         gameOver.setAttribute("id", "gameOver");
         gameOver.setAttribute("class", "gameOver");
@@ -495,7 +299,8 @@ class Game {
 
     youWin() {
         this.gameWin = true;
-        
+        this.battleMusic.pause()
+
         const gameWin = document.createElement("div");
         gameWin.setAttribute("id", "gameWin");
         gameWin.setAttribute("class", "gameWin");
@@ -540,6 +345,201 @@ class Game {
     }
 }
 
+// define all global variables
+const towerGame = new Game(); // the global game object
+let gameUI; // the game UI
+let settlePoint;
+const frame_rate = 25; // game frame rate: refresh once per 40 milliseconds: 1000/25=40
+const gameWrap = document.createElement("div"); // contains the game's window
+const canvasWidth = 700; // Initialize game canvas width
+const canvasHight = 600; // Initialize game canvas hight
+let updateTimeoutID;
+// TODO: add more global variables
+
+// game setup
+function gameSetup() {
+    gameUI = new GameUI();
+    settlePoint = new SettlePoint();
+    //setup game main container
+    gameWrap.setAttribute("id","game-wrap");
+    gameWrap.classList.add("game-wrap")
+    let marginleft = -canvasWidth/2;
+
+    document.body.append(gameWrap);
+    gameWrap.style.width = canvasWidth+"px";
+    gameWrap.style.height = canvasHight+"px";
+    
+    gameWrap.style.left = "50%";
+    gameWrap.style.marginLeft = marginleft.toString()+"px";
+
+    console.log("the game wrap is created");
+    
+    // Create a tower wrap
+    let towerWrap = document.createElement("div");
+    towerWrap.setAttribute("id","towerWrap");
+    towerWrap.setAttribute("class","towerWrap");
+    gameWrap.append(towerWrap);
+
+    // Setup game canvas
+    intializeCanvas();
+
+    // Setup game menu
+    let gameMenu = document.createElement("div");
+    gameMenu.setAttribute("id","game-menu");
+    gameMenu.setAttribute("class","game-menu");
+
+    gameMenu.style.left = "50%";
+    gameMenu.style.marginLeft = "-110px";
+
+    document.querySelector("#game-wrap").append(gameMenu);
+    console.log("the game menu object is created");
+
+    drawGameMenu(); // Draw the game menu buttons
+}
+
+function intializeCanvas() { 
+    //from gameSetup()
+    // Initialize All Game Canvas
+    /*
+    * Initialize the map canvas contains the scene
+    * Get CTX(map) and set canvas's width and height
+    */
+    const mapCanvas = document.querySelector("#mapCanvas");
+    let marginleft = -canvasWidth/2;
+    // get CTX(map)
+    towerGame.mapCTX = mapCanvas.getContext("2d") // Create a CanvasRenderingContext 2D Object
+    mapCanvas.width = canvasWidth;
+    mapCanvas.height = canvasHight;
+    mapCanvas.style.left = "50%";
+    mapCanvas.style.marginLeft = marginleft.toString()+"px";
+
+    /*
+    * Initialize the battle canvas
+    * Get CTX(battle canvas) and set canvas's width and height
+    */
+    const towerCanvas = document.querySelector("#towerCanvas");
+    // get CTX(battle canvas)
+    towerGame.towerCTX = towerCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
+    towerCanvas.width = canvasWidth;
+    towerCanvas.height = canvasHight;
+    towerCanvas.style.left = "50%";
+    towerCanvas.style.marginLeft = marginleft.toString()+"px";
+    /*
+    * Initialize the enemy canvas
+    * Get CTX(enemy canvas) and set canvas's width and height
+    */
+    const enemyCanvas = document.querySelector("#enemisCanvas");
+    // get CTX(enemy canvas)
+    towerGame.enemyCTX = enemyCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
+    enemyCanvas.width = canvasWidth;
+    enemyCanvas.height = canvasHight;
+    enemyCanvas.style.left = "50%";
+    enemyCanvas.style.marginLeft = marginleft.toString()+"px";
+
+    /*
+    * Initialize the bullets canvas
+    * Get CTX(bullets canvas) and set canvas's width and height
+    */
+    const bulletCanvas = document.querySelector("#bulletsCanvas");
+    // get CTX(enemy canvas)
+    towerGame.bulletCTX = bulletCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
+    bulletCanvas.width = canvasWidth;
+    bulletCanvas.height = canvasHight;
+    bulletCanvas.style.left = "50%";
+    bulletCanvas.style.marginLeft = marginleft.toString()+"px";
+
+    /*
+    * Initialize the copyright canvas
+    * Get CTX(copyright canvas) and set canvas's width and height
+    */
+    const copyrightCanvas = document.querySelector("#copyrightCanvas");
+    // get CTX(enemy canvas)
+    towerGame.copyrightCTX = copyrightCanvas.getContext('2d'); // Create a CanvasRenderingContext 2D Object
+    copyrightCanvas.width = canvasWidth;
+    copyrightCanvas.height = canvasHight;
+    copyrightCanvas.style.left = "50%";
+    copyrightCanvas.style.marginLeft = marginleft.toString()+"px";
+}
+
+// Draw the game menu
+function drawGameMenu() {
+    console.log("starting draw game menu")
+    
+    // loading background-image
+    // gameWrap.style.backgroundImage = "url('https://images.unsplash.com/photo-1513151233558-d860c5398176?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')";
+    towerGame.mapSprite.src = "https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+    towerGame.mapSprite.onload = function(){
+        towerGame.mapCTX.drawImage(towerGame.mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
+    }
+
+    copyright();
+
+    const gameMenu = document.querySelector("#game-menu");
+    
+    // create 3 buttons: start, credits and exit
+    const startButton = document.createElement("div");
+    startButton.setAttribute("id","start-button");
+    startButton.setAttribute("name","start"); // 'name' attribute is used for loading background imamge
+    startButton.classList.add("menu-button","start-button");
+
+    const creditsButton = document.createElement("div");
+    creditsButton.setAttribute("id","credits-button");
+    creditsButton.setAttribute("name","credits"); // 'name' attribute is used for loading background imamge
+    creditsButton.classList.add("menu-button","credits-button");
+
+    const exitButton = document.createElement("div");
+    exitButton.setAttribute("id","exit-button");
+    exitButton.setAttribute("name","exit"); // 'name' attribute is used for loading background imamge
+    exitButton.classList.add("menu-button","exit-button");
+
+    // rendering menu buttons
+    gameMenu.append(startButton,creditsButton,exitButton);
+
+    const menuButton = document.querySelectorAll(".menu-button"); //select all menu-buttons
+    /*
+     * use loop to set all button's backgroundImage
+     * use onmouseover & onmouseout to set the hover effects
+     */
+    menuButton.forEach(element => {
+        element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"1.png')";
+        // hover effect
+        element.onmouseover = function () {
+            element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"2.png')";
+        };
+        element.onmouseout = function () {
+            element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"1.png')";
+        };
+        // click event
+        element.addEventListener('click',function(){
+            element.style.backgroundImage = "url('assets/images/ui/"+element.getAttribute('name')+"3.png')";
+            switch (element.getAttribute('name')) {
+                case "start":
+                    loadingLevel();
+                    break;
+                case "credits":
+                    credits();
+                    break;
+                case "exit":
+                    exit();
+                    break;
+                default:
+                    break;
+            }
+        });
+    });
+}
+
+// Game Exit
+function exit() {
+    console.log("TODO: game exit")
+    close();
+}
+
+// Show Credits Page
+function credits() {
+    console.log("TODO: Credits");
+}
+
 // Game start
 function loadingLevel() { 
     // from drawGameMenu()
@@ -572,6 +572,9 @@ function loadingScene() { // from loadingLevel()
     towerGame.mapSprite.onload = function(){
         towerGame.mapCTX.drawImage(towerGame.mapSprite, 0, 0, mapCanvas.width, mapCanvas.height);
     }
+
+    towerGame.battleMusic.loop = true;
+    towerGame.battleMusic.play();
     
     drawSettlePoints();
     
@@ -605,6 +608,7 @@ function loadingScene() { // from loadingLevel()
        waypathWrap.append(waypoint);
        towerGame.endPoint = coordinate;
    }
+   
 }
 
 
