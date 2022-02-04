@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-02 00:33:05
  * @LastEditors: Ke Ren
- * @LastEditTime: 2022-01-26 23:44:21
+ * @LastEditTime: 2022-02-03 22:25:07
  * @FilePath: /tower-defense-game/js/tower.js
  */
 
@@ -131,6 +131,7 @@ class Tower {
                 this.maxDamage = 50;
                 this.rate = 1.5;
                 this.fireInterval = this.rate * frame_rate;
+                this.sound.src = "assets/sounds/cannonShooting.ogg"
                 break;
 
             case "ice":
